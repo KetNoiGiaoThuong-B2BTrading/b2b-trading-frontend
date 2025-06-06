@@ -4,6 +4,7 @@ import { cn } from '../../lib/utils';
 import api from '../../lib/axios';
 import { API_ENDPOINTS } from '../../lib/apiConfig';
 import { useToast } from '../../context/ToastContext';
+import Cookies from 'js-cookie';
 
 export default function AccountInfo() {
     const { showToast } = useToast();
@@ -13,12 +14,11 @@ export default function AccountInfo() {
         fullName: '',
         email: '',
         role: '',
-        status: '',
+        status: 'Active',
     });
 
     const fetchAccountInfo = async () => {
-        const res = await api.get(API_ENDPOINTS.me);
-        const data = res.data.data;
+        const data = JSON.parse(Cookies.get('data') || '{}');
         setForm(data);
     };
 

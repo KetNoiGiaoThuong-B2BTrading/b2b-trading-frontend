@@ -3,6 +3,7 @@ import InputField from '../../components/common/InputField';
 import api from '../../lib/axios';
 import { API_ENDPOINTS } from '../../lib/apiConfig';
 import { useToast } from '../../context/ToastContext';
+import Cookies from 'js-cookie';
 
 export default function CompanyInfo() {
     const { showToast } = useToast();
@@ -34,7 +35,7 @@ export default function CompanyInfo() {
         fullName: '',
         email: '',
         role: '',
-        status: '',
+        status: 'Active',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -61,8 +62,8 @@ export default function CompanyInfo() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await api.get(API_ENDPOINTS.me);
-                const userData = res.data.data;
+                const data = JSON.parse(Cookies.get('data') || '{}');
+                const userData = data;
                 setUser(userData);
 
                 if (userData.companyID) {

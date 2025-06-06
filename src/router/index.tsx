@@ -25,6 +25,7 @@ import CompanyProfilePage from '../pages/company/CompanyProfilePage';
 import CategoriesPage from '../pages/category/CategoriesPage';
 import ProductsPage from '../pages/product/ProductsPage';
 import ProductDetailPage from '../pages/product/ProductDetailPage';
+import ProfilePage from '../pages/home/ProfilePage';
 
 const router = createBrowserRouter([
     {
@@ -51,6 +52,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'profiles',
+                Component: ProfilePage,
                 children: [
                     { path: 'account', Component: AccountInfo },
                     { path: 'company', Component: CompanyInfo },

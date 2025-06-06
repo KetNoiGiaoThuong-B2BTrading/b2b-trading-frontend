@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import Cookies from 'js-cookie';
-import api from '../../lib/axios';
-import { API_ENDPOINTS } from '../../lib/apiConfig';
 
 interface User {
     userID: number;
@@ -17,10 +15,12 @@ export default function TopNavigationBar() {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        const token = Cookies.get('access_token');
-
+        const token = Cookies.get('data');
+        // console.log(token);
         if (token) {
-            console.log(token);
+            const data = JSON.parse(token);
+            // console.log(data);
+            setUser(data);
         }
     }, []);
 

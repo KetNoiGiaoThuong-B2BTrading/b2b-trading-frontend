@@ -23,21 +23,20 @@ export default function LoginPage() {
                 email: email,
                 password: password,
             });
-            console.log(res.data);
             const data = res.data;
-            Cookies.set('data', data, { expires: 7 });
+            // console.log(JSON.stringify(data));
+            Cookies.set('data', JSON.stringify(data), { expires: 7 });
             showToast({
                 title: 'Success',
-                message: data.response.message,
+                message: 'Login successfully',
                 type: 'success',
             });
             navigate('/');
-            // console.log(data);
-            
         } catch (error) {
+            console.log(error);
             showToast({
                 title: 'Failed',
-                message: "Invalid email or password",
+                message: 'Invalid email or password',
                 type: 'error',
             });
             setError('Invalid email or password');

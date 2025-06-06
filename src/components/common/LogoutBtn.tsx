@@ -4,8 +4,6 @@ import { LogOut } from 'react-feather';
 import { useNavigate } from 'react-router';
 import Cookies from 'js-cookie';
 
-import api from '../../lib/axios';
-import { API_ENDPOINTS } from '../../lib/apiConfig';
 import { useToast } from '../../context/ToastContext';
 
 export default function LogoutBtn() {
@@ -14,19 +12,13 @@ export default function LogoutBtn() {
 
     const handleLogout = async () => {
         try {
-            const res = await api.post(API_ENDPOINTS.logout);
-            if (res.status === 200) {
-                showToast({
-                    title: 'Đăng xuất thành công',
-                    message: 'Hẹn gặp lại!',
-                    type: 'success',
-                });
-                navigate('/auth/login');
-                // Clear the access token from cookies
-                Cookies.remove('access_token');
-            } else {
-                console.error('Logout failed', res.data);
-            }
+            showToast({
+                title: 'Đăng xuất thành công',
+                message: 'Hẹn gặp lại!',
+                type: 'success',
+            });
+            Cookies.remove('data');
+            navigate('/auth/login');
         } catch (err) {
             console.error(err);
         }
