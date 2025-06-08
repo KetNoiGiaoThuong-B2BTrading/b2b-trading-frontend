@@ -1,6 +1,6 @@
 const DeliverySection = () => {
     return (
-        <section className="py-6 flex flex-col justify-center self-stretch px-24 mt-5 bg-slate-50 max-md:px-5 max-md:mt-10 max-md:max-w-full">
+        <section className="py-6 flex flex-col justify-center self-stretch px-24 bg-slate-50 max-md:px-5 max-md:mt-10 max-md:max-w-full">
             <div className="flex flex-wrap gap-10 items-center max-md:max-w-full">
                 <div className="flex-1 flex-col self-stretch my-auto min-w-60 w-[485px] max-md:max-w-full">
                     <div className="w-full text-neutral-950 max-md:max-w-full">

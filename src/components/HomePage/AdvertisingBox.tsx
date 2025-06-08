@@ -6,7 +6,7 @@ interface AdvertisingBoxProps {
 
 const AdvertisingBox: React.FC<AdvertisingBoxProps> = ({ title, description, buttonText }) => {
     return (
-        <section className="py-6">
+        <section className="py-6 bg-white">
             <div className="w-max-screen bg-blue-500 py-1">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <section className={'w-full text-white py-1 rounded-lg'}>
