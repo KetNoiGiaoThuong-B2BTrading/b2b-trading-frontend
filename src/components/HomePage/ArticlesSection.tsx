@@ -45,32 +45,32 @@ const fallbackArticles: Article[] = [
 
 export const ArticlesSection = () => {
     const navigate = useNavigate();
-    const [articles, setArticles] = useState<Article[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [articles, setArticles] = useState<Article[]>(fallbackArticles);
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchArticles = async () => {
-            try {
-                const res = await api.get(API_ENDPOINTS.getAllArticles);
-                console.log("Fetched articles:", res.data);
-                if (Array.isArray(res.data)) {
-                setArticles(res.data.slice(0, 4));
-                } else if (Array.isArray(res.data.data)) {
-                setArticles(res.data.data.slice(0, 4));
-                } else {
-                console.warn("API trả về dữ liệu không hợp lệ. Dùng fallback.");
-                setArticles(fallbackArticles);
-                }
-            } catch (error) {
-                console.error('Error fetching articles:', error);
-                setArticles(fallbackArticles);
-            } finally {
-                setLoading(false);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchArticles = async () => {
+    //         try {
+    //             // const res = await api.get(API_ENDPOINTS.getAllArticles);
+    //             // console.log("Fetched articles:", res.data);
+    //             if (Array.isArray(res.data)) {
+    //             setArticles(res.data.slice(0, 4));
+    //             } else if (Array.isArray(res.data.data)) {
+    //             setArticles(res.data.data.slice(0, 4));
+    //             } else {
+    //             console.warn("API trả về dữ liệu không hợp lệ. Dùng fallback.");
+    //             setArticles(fallbackArticles);
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching articles:', error);
+    //             setArticles(fallbackArticles);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
 
-        fetchArticles();
-    }, []);
+    //     fetchArticles();
+    // }, []);
 
     return (
         <section className="py-6 px-20 bg-white">

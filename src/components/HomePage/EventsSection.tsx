@@ -55,37 +55,37 @@ const fallbackEvents: Event[] = [
 
 const EventsSection: React.FC = () => {
     const navigate = useNavigate();
-    const [events, setEvents] = useState<Event[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [events, setEvents] = useState<Event[]>(fallbackEvents);
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                const res = await api.get(API_ENDPOINTS.getAllEvents);
-                console.log("Fetched events:", res.data);
+    // useEffect(() => {
+    //     const fetchEvents = async () => {
+    //         try {
+    //             const res = await api.get(API_ENDPOINTS.getAllEvents);
+    //             console.log("Fetched events:", res.data);
         
-                if (Array.isArray(res.data)) {
-                setEvents(res.data.slice(0, 4));
-                } else if (Array.isArray(res.data.data)) {
-                setEvents(res.data.data.slice(0, 4));
-                } else {
-                console.warn("API events trả về sai định dạng. Sử dụng fallback.");
-                setEvents(fallbackEvents);
-                }
-            } catch (error) {
-                console.error('Error fetching events:', error);
-                setEvents(fallbackEvents); // fallback khi lỗi
-            } finally {
-                setLoading(false);
-            }
-        };
+    //             if (Array.isArray(res.data)) {
+    //             setEvents(res.data.slice(0, 4));
+    //             } else if (Array.isArray(res.data.data)) {
+    //             setEvents(res.data.data.slice(0, 4));
+    //             } else {
+    //             console.warn("API events trả về sai định dạng. Sử dụng fallback.");
+    //             setEvents(fallbackEvents);
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching events:', error);
+    //             setEvents(fallbackEvents); // fallback khi lỗi
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
 
-        fetchEvents();
-    }, []);
+    //     fetchEvents();
+    // }, []);
 
-    if (loading) {
-        return <div className="text-center mt-10 text-gray-600">Loading ...</div>;
-    }
+    // if (loading) {
+    //     return <div className="text-center mt-10 text-gray-600">Loading ...</div>;
+    // }
 
     return (
         <section className="py-6 px-20 bg-white">
@@ -97,6 +97,9 @@ const EventsSection: React.FC = () => {
                 </button>
             </div>
 
+            {loading ? (
+                <div className="text-center mt-10 text-gray-600">Loading ...</div>
+            ) : (
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {events.map((event) => (
                     <EventCard
@@ -109,6 +112,7 @@ const EventsSection: React.FC = () => {
                     />
                 ))}
             </div>
+            )}
         </section>
     );
 };

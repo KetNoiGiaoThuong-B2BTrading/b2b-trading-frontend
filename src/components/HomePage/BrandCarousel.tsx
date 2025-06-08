@@ -25,27 +25,27 @@ const BrandCarousel = () => {
 
     const totalSlides = Math.ceil(brands.length / itemsPerSlide);
 
-    useEffect(() => {
-        const fetchBrands = async () => {
-            try {
-                const res = await api.get(API_ENDPOINTS.getAllBrands);
-                console.log("Fetched brands raw response:", res.data);
-                if (Array.isArray(res.data)) {
-                setBrands(res.data);
-                } else if (Array.isArray(res.data)) {
-                    setBrands(res.data);
-                } else {
-                    console.warn("API không trả về mảng hợp lệ, dùng fallback");
-                    setBrands(fallbackBrands);
-                }
-            } catch (error) {
-                console.error('Error fetching brands:', error);
-                setBrands(fallbackBrands); // fallback
-            }
-        };
+    // useEffect(() => {
+    //     const fetchBrands = async () => {
+    //         try {
+    //             const res = await api.get(API_ENDPOINTS.getAllBrands);
+    //             console.log("Fetched brands raw response:", res.data);
+    //             if (Array.isArray(res.data)) {
+    //             setBrands(res.data);
+    //             } else if (Array.isArray(res.data)) {
+    //                 setBrands(res.data);
+    //             } else {
+    //                 console.warn("API không trả về mảng hợp lệ, dùng fallback");
+    //                 setBrands(fallbackBrands);
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching brands:', error);
+    //             setBrands(fallbackBrands); // fallback
+    //         }
+    //     };
 
-        fetchBrands();
-    }, []);
+    //     fetchBrands();
+    // }, []);
 
     const handlePrev = () => {
         setCurrentSlide((prev) => (prev > 0 ? prev - 1 : totalSlides - 1));
