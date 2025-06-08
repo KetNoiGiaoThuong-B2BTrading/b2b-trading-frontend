@@ -3,12 +3,6 @@ import { useSearchParams } from 'react-router';
 import api from '../../lib/axios';
 import { API_ENDPOINTS } from '../../lib/apiConfig';
 
-interface FilterOption {
-    id: number;
-    name: string;
-    count: number;
-}
-
 interface Subcategory {
     id: number;
     name: string;
@@ -53,30 +47,12 @@ const fallbackSubcategories: Subcategory[] = [
     { id: 5, name: 'Subcategory 5', count: 12956 }
 ];
 
-const fallbackFilters: { [key: string]: FilterOption[] } = {
-    group1: [
-        { id: 1, name: 'Filter 1', count: 45 },
-        { id: 2, name: 'Filter 2', count: 28 },
-        { id: 3, name: 'Filter 3', count: 36 },
-        { id: 4, name: 'Filter 4', count: 52 },
-        { id: 5, name: 'Filter 5', count: 17 },
-        { id: 6, name: 'Filter 6', count: 21 },
-        { id: 7, name: 'Filter 7', count: 43 },
-        { id: 8, name: 'Filter 8', count: 62 }
-    ],
-    group2: [
-        { id: 9, name: 'Filter 1', count: 45 },
-        { id: 10, name: 'Filter 2', count: 28 }
-    ]
-};
-
 const fallbackColors: string[] = ['red', 'brown', 'yellow', 'green', 'blue', 'indigo', 'purple', 'pink'];
 
 const FilterSection = ({ onFilterChange, fallbackProducts }: Props) => {
     const [searchParams] = useSearchParams();
     
     const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
-    const [filters, setFilters] = useState<{ [key: string]: FilterOption[] }>({});
     const [colorFilters, setColorFilters] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const [maxPrice, setMaxPrice] = useState(100);
@@ -84,7 +60,6 @@ const FilterSection = ({ onFilterChange, fallbackProducts }: Props) => {
     const [filtersLoaded, setFiltersLoaded] = useState(false);
 
     const [showSubcategories, setShowSubcategories] = useState(true);
-    //const [showFilters, setShowFilters] = useState(true);
     const [showRange, setShowRange] = useState(true);
     const [showColorFilters, setShowColorFilters] = useState(true);
     const [showRatingFilters, setShowRatingFilters] = useState(true);
@@ -94,6 +69,14 @@ const FilterSection = ({ onFilterChange, fallbackProducts }: Props) => {
     const [selectedColors, setSelectedColors] = useState<string[]>([]);
     const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
 
+    const [minInput, setMinInput] = useState(range[0]);
+    const [maxInput, setMaxInput] = useState(range[1]);
+
+    useEffect(() => {
+        setMinInput(range[0]);
+        setMaxInput(range[1]);
+      }, [range]);
+      
     useEffect(() => {
         const categoryFromUrl = searchParams.get('category');
         if (categoryFromUrl && subcategories.length > 0) {
@@ -115,12 +98,25 @@ const FilterSection = ({ onFilterChange, fallbackProducts }: Props) => {
             if (parsed.filters) setSelectedFilterIds(parsed.filters);
             if (parsed.colors) setSelectedColors(parsed.colors);
             if (parsed.ratings) setSelectedRatings(parsed.ratings);
-            if (parsed.range) setRange(parsed.range);
+            if (parsed.range) {
+                setRange(parsed.range);
+                setMinInput(parsed.range[0]);
+                setMaxInput(parsed.range[1]);
+        
+                const activeFilters = {
+                  subcategories: parsed.subcategories || [],
+                  filters: parsed.filters || [],
+                  colors: parsed.colors || [],
+                  ratings: parsed.ratings || [],
+                  range: parsed.range
+                };
+                fetchFilteredProducts(activeFilters);
+            }
         } catch (e) {
             console.error('Lỗi khi parse localStorage filters:', e);
         }
-        }
-        setFiltersLoaded(true);
+    }
+    setFiltersLoaded(true);
     }, []);
 
     useEffect(() => {
@@ -141,7 +137,6 @@ const FilterSection = ({ onFilterChange, fallbackProducts }: Props) => {
         } catch (err) {
             console.error("Error fetching filters:", err);
             setSubcategories(fallbackSubcategories);
-            setFilters(fallbackFilters);
             setColorFilters(fallbackColors);
             setMaxPrice(10000000);
             setRange([0, 10000000]);
@@ -159,16 +154,16 @@ const FilterSection = ({ onFilterChange, fallbackProducts }: Props) => {
         onFilterChange(filtered);
         } catch (err) {
         console.error('Failed to fetch filtered products:', err);
-        onFilterChange(fallbackProducts);
+        const filteredFallback = fallbackProducts.filter(p =>
+            p.price >= filters.range[0] && p.price <= filters.range[1]
+          );
+          onFilterChange(filteredFallback);
         }
     };
 
     useEffect(() => {
         if (!filtersLoaded) return;
         
-        const isFiltering = selectedSubcatIds.length > 0 || selectedFilterIds.length > 0 || selectedColors.length > 0 || selectedRatings.length > 0 || range[0] !== 0 || range[1] !== maxPrice;
-        if (!isFiltering) return;
-
         const activeFilters = {
         subcategories: selectedSubcatIds,
         filters: selectedFilterIds,
@@ -205,9 +200,10 @@ const FilterSection = ({ onFilterChange, fallbackProducts }: Props) => {
     if (loading || !filtersLoaded) return <div className="px-6 py-4 text-gray-500 text-sm">Loading filters...</div>;
     
     return (
-        <div className="w-full md:w-74 px-6 border-1 border-blue-300 rounded-[10px]">
-        <div className="flex justify-between items-center my-4">
-            <span className="text-blue-600 text-sm cursor-pointer" onClick={handleClearAll}>Xóa hết bộ lọc</span>
+        <div className="w-full md:w-71 px-7 py-1 shadow-lg">
+        <div className="flex justify-between items-center mt-2 mb-4">
+        <p className="font-medium text-xl">Bộ lọc</p>
+        <span className="text-blue-600 text-sm cursor-pointer" onClick={handleClearAll}>Xóa hết</span>
         </div>
         {/* Subcategories */}
         <div className="mb-6">
@@ -245,54 +241,6 @@ const FilterSection = ({ onFilterChange, fallbackProducts }: Props) => {
             )}
         </div>
 
-        {/* Filters */}
-        {/* <div className="mb-6">
-            <div
-            className="flex justify-between items-center mb-2 cursor-pointer"
-            onClick={() => setShowFilters(prev => !prev)}
-            >
-            <h2 className="font-medium">Filters</h2>
-            <svg className={`h-4 w-4 transition-transform ${showFilters ? 'rotate-0 text-blue-600' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-            </div>
-
-            {showFilters && (
-            <>
-                <div className="flex justify-between items-center mb-2">
-                <span className="text-blue-600 text-sm cursor-pointer" onClick={handleClearAll}>Clear all</span>
-                </div>
-
-                {Object.entries(filters).map(([group, options], idx) => (
-                <div key={idx} className="mb-4">
-                    <h3 className="text-sm font-medium mb-2">{group}</h3>
-                    <ul>
-                    {options.map(option => (
-                        <li key={option.id} className="flex items-center justify-between py-1">
-                        <label className="flex items-center">
-                            <input
-                            type="checkbox"
-                            className="mr-2"
-                            checked={selectedFilterIds.includes(option.id)}
-                            onChange={(e) => {
-                                if (e.target.checked)
-                                setSelectedFilterIds(prev => [...prev, option.id]);
-                                else
-                                setSelectedFilterIds(prev => prev.filter(id => id !== option.id));
-                            }}
-                            />
-                            <span>{option.name}</span>
-                        </label>
-                        <span className="text-gray-500 text-sm">{option.count}</span>
-                        </li>
-                    ))}
-                    </ul>
-                </div>
-                ))}
-            </>
-            )}
-        </div> */}
-
         {/* Range */}
         <div className="mb-6">
             <div className="flex justify-between items-center mb-2 cursor-pointer" onClick={() => setShowRange(prev => !prev)}>
@@ -306,8 +254,12 @@ const FilterSection = ({ onFilterChange, fallbackProducts }: Props) => {
             <div className="flex gap-2 items-center mb-2">
                 <input
                 type="number"
-                //value={range[0]}
-                onChange={(e) => setRange([Number(e.target.value), range[1]])}
+                value={minInput}
+                onChange={(e) => {
+                    const value = Number(e.target.value);
+                    setMinInput(value);
+                    setRange([value, maxInput]);
+                }}
                 onKeyDown={handleRangeEnter}
                 className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
                 placeholder="Từ"
@@ -315,8 +267,12 @@ const FilterSection = ({ onFilterChange, fallbackProducts }: Props) => {
                 <span className="text-gray-400">–</span>
                 <input
                 type="number"
-                //value={range[1]}
-                onChange={(e) => setRange([range[0], Number(e.target.value)])}
+                value={maxInput}
+                onChange={(e) => {
+                    const value = Number(e.target.value);
+                    setMaxInput(value);
+                    setRange([minInput, value]);
+                }}
                 onKeyDown={handleRangeEnter}
                 className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
                 placeholder="Đến"
@@ -357,7 +313,7 @@ const FilterSection = ({ onFilterChange, fallbackProducts }: Props) => {
         </div>
 
         {/* Rating */}
-        <div className="mb-6">
+        <div className="mb-2">
             <div className="flex justify-between items-center mb-2 cursor-pointer" onClick={() => setShowRatingFilters(prev => !prev)} >
             <h3 className="font-medium">Đánh giá</h3>
             <svg className={`h-4 w-4 transition-transform ${showRatingFilters ? 'rotate-0 text-blue-600' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -27,7 +27,7 @@ const fallbackCompanies: Company[] = [
         representative: 'Nguyễn Văn A',
         email: 'contact@abc.com',
         phoneNumber: '0123456789',
-        verificationStatus: 'verified',
+        verificationStatus: 'Đã xác minh',
         imageCompany: 'https://placehold.co/150',
     },
     {
@@ -39,7 +39,7 @@ const fallbackCompanies: Company[] = [
         representative: 'Trần Thị B',
         email: 'info@xyz.com',
         phoneNumber: '0987654321',
-        verificationStatus: 'verified',
+        verificationStatus: 'Đã xác minh',
         imageCompany: 'https://placehold.co/150',
     },
 ];
@@ -49,22 +49,31 @@ const CompaniesPage = () => {
     const [companies, setCompanies] = useState<Company[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
                 const response = await api.get(API_ENDPOINTS.getAllCompanies);
-                setCompanies(response.data);
-                setLoading(false);
+                const data = response?.data;
+                if (Array.isArray(data)) {
+                setCompanies(data);
+                } else {
+                setCompanies(fallbackCompanies);
+                }
             } catch (err) {
                 console.error('Error fetching companies:', err);
                 setError(true);
+                setCompanies(fallbackCompanies);
+            } finally {
                 setLoading(false);
             }
         };
 
         fetchCompanies();
     }, []);
+
+  const uniqueSectors = Array.from(new Set(companies.map(c => c.businessSector)));
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -112,45 +121,73 @@ const CompaniesPage = () => {
                             </svg>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {companies.filter(company => company.verificationStatus === 'Đã xác minh')
-                            .map((company) => (
-                                <button
-                                key={company.companyID}
-                                onClick={() => navigate(`/companies/${company.companyID}`)}
-                                className="w-full text-left bg-white rounded-lg overflow-hidden shadow-xl border border-gray-200 hover:shadow-md hover:cursor-pointer transition-shadow"
-                            >
-                                <img 
-                                    src={company.imageCompany || 'https://placehold.co/150'} 
-                                    alt={company.companyName} 
-                                    className="w-full h-48 object-cover" 
+                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                        {/* Bộ lọc */}
+                        <div className="lg:col-span-1">
+                            <h2 className="text-lg font-semibold mb-2">Lọc theo lĩnh vực</h2>
+                            <ul className="space-y-2">
+                            {uniqueSectors.map((sector, idx) => (
+                                <li key={idx} className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedSectors.includes(sector)}
+                                    onChange={(e) => {
+                                    if (e.target.checked) {
+                                        setSelectedSectors(prev => [...prev, sector]);
+                                    } else {
+                                        setSelectedSectors(prev => prev.filter(s => s !== sector));
+                                    }
+                                    }}
+                                    className="mr-2"
                                 />
-                                <div className="p-4">
+                                <label className="text-sm">{sector}</label>
+                                </li>
+                            ))}
+                            </ul>
+                        </div>
+
+                        {/* Danh sách công ty */}
+                        <div className="lg:col-span-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                            {companies
+                                .filter(c => c.verificationStatus === 'Đã xác minh')
+                                .filter(c =>
+                                selectedSectors.length === 0 ||
+                                selectedSectors.includes(c.businessSector)
+                                )
+                                .map((company) => (
+                                <button
+                                    key={company.companyID}
+                                    onClick={() => navigate(`/companies/${company.companyID}`)}
+                                    className="w-full text-left bg-white rounded-lg overflow-hidden shadow-xl border border-gray-200 hover:shadow-md hover:cursor-pointer transition-shadow"
+                                >
+                                    <img
+                                    src={company.imageCompany || 'https://placehold.co/150'}
+                                    alt={company.companyName}
+                                    className="w-full h-48 object-cover"
+                                    />
+                                    <div className="p-4">
                                     <h3 className="text-lg font-semibold text-gray-900 mb-2">{company.companyName}</h3>
-                                    <p className="text-gray-600 text-sm mb-3">
-                                        {company.address}
-                                    </p>
+                                    <p className="text-gray-600 text-sm mb-3">{company.address}</p>
                                     <div className="flex items-center justify-between">
                                         <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-                                            {company.businessSector}
+                                        {company.businessSector}
                                         </span>
-                                        <span className={`text-sm ${
-                                            company.verificationStatus === 'Đã xác minh' 
-                                                ? 'text-green-500' 
-                                                : 'text-red-500'
-                                        }`}>
-                                            {company.verificationStatus}
+                                        <span className="text-sm text-green-500">
+                                        {company.verificationStatus}
                                         </span>
                                     </div>
-                                </div>
-                            </button>
-                            ))}
+                                    </div>
+                                </button>
+                                ))}
+                            </div>
                         </div>
-                    )}
+                    </div>
+                )}
                 </div>
             </main>
-        </div>
-    );
+            </div>
+        );
 };
 
 export default CompaniesPage;
