@@ -4,6 +4,7 @@ import api from '../../lib/axios';
 import { API_ENDPOINTS } from '../../lib/apiConfig';
 import InputField from '../../components/common/InputField';
 import { useToast } from '../../context/ToastContext';
+import Cookies from 'js-cookie';
 
 export default function CompleteProfilePage() {
     const [formData, setFormData] = useState({
@@ -24,11 +25,10 @@ export default function CompleteProfilePage() {
     useEffect(() => {
         const fetchEmail = async () => {
             try {
-                const response = await api.get(API_ENDPOINTS.me);
-                const data = response.data.data;
-                console.log(data.userID);
-                setUserId(data.userID);
-                setEmail(data.email);
+                const data = Cookies.get('data');
+                const userData = JSON.parse(data || '{}');
+                setUserId(userData.data.userID);
+                setEmail(userData.data.email);
             } catch (error) {
                 console.error('Failed to fetch user data:', error);
             }

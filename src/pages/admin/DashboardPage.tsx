@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
+import { FaBuilding, FaBox, FaChartLine, FaUsers, FaFileContract } from 'react-icons/fa';
 import Cookies from 'js-cookie';
-import { FaBuilding, FaShoppingCart, FaBox, FaChartLine, FaUsers, FaFileContract } from 'react-icons/fa';
 
 import api from '../../lib/axios';
 import { API_ENDPOINTS } from '../../lib/apiConfig';
@@ -118,7 +118,8 @@ export default function DashboardPage() {
         const fetchData = async () => {
             try {
                 // Fetch user data
-                const userResponse = await api.get(API_ENDPOINTS.me);
+                const userData = Cookies.get('data');
+                const userResponse = JSON.parse(userData || '{}');
                 setUserData(userResponse.data);
 
                 // Fetch dashboard stats

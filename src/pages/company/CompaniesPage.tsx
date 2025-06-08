@@ -46,8 +46,8 @@ const fallbackCompanies: Company[] = [
 
 const CompaniesPage = () => {
     const navigate = useNavigate();
-    const [companies, setCompanies] = useState<Company[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [companies, setCompanies] = useState<Company[]>(fallbackCompanies);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
 
@@ -57,9 +57,9 @@ const CompaniesPage = () => {
                 const response = await api.get(API_ENDPOINTS.getAllCompanies);
                 const data = response?.data;
                 if (Array.isArray(data)) {
-                setCompanies(data);
+                    setCompanies(data);
                 } else {
-                setCompanies(fallbackCompanies);
+                    setCompanies(fallbackCompanies);
                 }
             } catch (err) {
                 console.error('Error fetching companies:', err);
@@ -73,7 +73,7 @@ const CompaniesPage = () => {
         fetchCompanies();
     }, []);
 
-  const uniqueSectors = Array.from(new Set(companies.map(c => c.businessSector)));
+    const uniqueSectors = Array.from(new Set(companies.map((c: Company) => c.businessSector)));
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -90,11 +90,7 @@ const CompaniesPage = () => {
                     <h1 className="text-3xl font-bold text-gray-900 mb-6">Danh sách doanh nghiệp</h1>
 
                     {/* Error Message */}
-                    {error && (
-                        <div className="text-red-500 mb-4">
-                            Không thể tải danh sách doanh nghiệp từ máy chủ.
-                        </div>
-                    )}
+                    {error && <div className="text-red-500 mb-4">Không thể tải danh sách doanh nghiệp từ máy chủ.</div>}
 
                     {/* Companies Grid */}
                     {loading ? (
@@ -121,73 +117,81 @@ const CompaniesPage = () => {
                             </svg>
                         </div>
                     ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                        {/* Bộ lọc */}
-                        <div className="lg:col-span-1">
-                            <h2 className="text-lg font-semibold mb-2">Lọc theo lĩnh vực</h2>
-                            <ul className="space-y-2">
-                            {uniqueSectors.map((sector, idx) => (
-                                <li key={idx} className="flex items-center">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedSectors.includes(sector)}
-                                    onChange={(e) => {
-                                    if (e.target.checked) {
-                                        setSelectedSectors(prev => [...prev, sector]);
-                                    } else {
-                                        setSelectedSectors(prev => prev.filter(s => s !== sector));
-                                    }
-                                    }}
-                                    className="mr-2"
-                                />
-                                <label className="text-sm">{sector}</label>
-                                </li>
-                            ))}
-                            </ul>
-                        </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                            {/* Bộ lọc */}
+                            <div className="lg:col-span-1">
+                                <h2 className="text-lg font-semibold mb-2">Lọc theo lĩnh vực</h2>
+                                <ul className="space-y-2">
+                                    {uniqueSectors.map((sector: string, idx: number) => (
+                                        <li key={idx} className="flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                id={sector}
+                                                checked={selectedSectors.includes(sector)}
+                                                onChange={(e) => {
+                                                    if (e.target.checked) {
+                                                        setSelectedSectors((prev) => [...prev, sector]);
+                                                    } else {
+                                                        setSelectedSectors((prev) =>
+                                                            prev.filter((s: string) => s !== sector),
+                                                        );
+                                                    }
+                                                }}
+                                                className="mr-2"
+                                            />
+                                            <label htmlFor={sector} className="text-sm">
+                                                {sector}
+                                            </label>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
 
-                        {/* Danh sách công ty */}
-                        <div className="lg:col-span-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {companies
-                                .filter(c => c.verificationStatus === 'Đã xác minh')
-                                .filter(c =>
-                                selectedSectors.length === 0 ||
-                                selectedSectors.includes(c.businessSector)
-                                )
-                                .map((company) => (
-                                <button
-                                    key={company.companyID}
-                                    onClick={() => navigate(`/companies/${company.companyID}`)}
-                                    className="w-full text-left bg-white rounded-lg overflow-hidden shadow-xl border border-gray-200 hover:shadow-md hover:cursor-pointer transition-shadow"
-                                >
-                                    <img
-                                    src={company.imageCompany || 'https://placehold.co/150'}
-                                    alt={company.companyName}
-                                    className="w-full h-48 object-cover"
-                                    />
-                                    <div className="p-4">
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{company.companyName}</h3>
-                                    <p className="text-gray-600 text-sm mb-3">{company.address}</p>
-                                    <div className="flex items-center justify-between">
-                                        <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-                                        {company.businessSector}
-                                        </span>
-                                        <span className="text-sm text-green-500">
-                                        {company.verificationStatus}
-                                        </span>
-                                    </div>
-                                    </div>
-                                </button>
-                                ))}
+                            {/* Danh sách công ty */}
+                            <div className="lg:col-span-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                                    {companies
+                                        .filter((c) => c.verificationStatus === 'Đã xác minh')
+                                        .filter(
+                                            (c) =>
+                                                selectedSectors.length === 0 ||
+                                                selectedSectors.includes(c.businessSector),
+                                        )
+                                        .map((company) => (
+                                            <button
+                                                key={company.companyID}
+                                                onClick={() => navigate(`/companies/${company.companyID}`)}
+                                                className="w-full text-left bg-white rounded-lg overflow-hidden shadow-xl border border-gray-200 hover:shadow-md hover:cursor-pointer transition-shadow"
+                                            >
+                                                <img
+                                                    src={company.imageCompany || 'https://placehold.co/150'}
+                                                    alt={company.companyName}
+                                                    className="w-full h-48 object-cover"
+                                                />
+                                                <div className="p-4">
+                                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                                        {company.companyName}
+                                                    </h3>
+                                                    <p className="text-gray-600 text-sm mb-3">{company.address}</p>
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                                                            {company.businessSector}
+                                                        </span>
+                                                        <span className="text-sm text-green-500">
+                                                            {company.verificationStatus}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        ))}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
                 </div>
             </main>
-            </div>
-        );
+        </div>
+    );
 };
 
 export default CompaniesPage;

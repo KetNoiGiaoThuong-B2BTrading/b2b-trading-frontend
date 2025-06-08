@@ -19,7 +19,7 @@ const fallbackBrands: Brand[] = [
     { name: 'Samsung', logo: '/brands/samsung.png' },
 ];
 const BrandCarousel = () => {
-    const [brands, setBrands] = useState<Brand[]>([]);
+    const [brands, setBrands] = useState<Brand[]>(fallbackBrands);
     const [currentSlide, setCurrentSlide] = useState(0);
     const itemsPerSlide = 3;
 
@@ -77,15 +77,27 @@ const BrandCarousel = () => {
                     onClick={handlePrev}
                     className="absolute -left-5 top-14 transform -translate-y-1/2 bg-white rounded-full shadow-md p-2 z-10 hover:bg-gray-100 transition"
                 >
-                    <svg className="w-5 h-5 text-gray-500 hover:text-gray-700 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                        className="w-5 h-5 text-gray-500 hover:text-gray-700 transition"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
 
                 <div className="flex justify-between items-center space-x-8 py-4 px-8">
                     {getSlideItems().map((brand, index) => (
-                        <div key={index} className="flex-1 flex justify-center items-center group py-3 border border-gray-100 rounded-xl shadow-sm bg-gray-50 hover:bg-gray-100 transition-colors duration-300 rounded-lg">
-                            <img src={brand.logo} alt={brand.name} className="h-14 transition-transform duration-300 ease-in-out group-hover:scale-105 group-hover:drop-shadow-md"/>
+                        <div
+                            key={index}
+                            className="flex-1 flex justify-center items-center group py-3 border border-gray-100 rounded-xl shadow-sm bg-gray-50 hover:bg-gray-100 transition-colors duration-300 rounded-lg"
+                        >
+                            <img
+                                src={brand.logo}
+                                alt={brand.name}
+                                className="h-14 transition-transform duration-300 ease-in-out group-hover:scale-105 group-hover:drop-shadow-md"
+                            />
                         </div>
                     ))}
                 </div>
@@ -94,7 +106,12 @@ const BrandCarousel = () => {
                     onClick={handleNext}
                     className="absolute -right-5 top-14 transform -translate-y-1/2 bg-white rounded-full shadow-md p-2 z-10 hover:bg-gray-100 transition"
                 >
-                <svg className="w-5 h-5 text-gray-500 hover:text-gray-700 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                        className="w-5 h-5 text-gray-500 hover:text-gray-700 transition"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                 </button>

@@ -1,12 +1,12 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
 type CartItem = {
-    image: string;
-    name: string;
-    price: number;
-    partNo: string;
-    quantity: number;
-    company: string;
+    productID: number;
+    productName: string;
+    unitPrice: number;
+    stockQuantity: number;
+    status: string;
+    createdDate: string;
 };
 
 type CartContextType = {
@@ -21,10 +21,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     const addToCart = (item: CartItem) => {
         setCart((prevCart) => {
-            const index = prevCart.findIndex((i) => i.partNo === item.partNo);
+            const index = prevCart.findIndex((i) => i.productID === item.productID);
             if (index !== -1) {
                 const updatedCart = [...prevCart];
-                updatedCart[index] = { ...updatedCart[index], quantity: item.quantity };
+                updatedCart[index] = { ...updatedCart[index], stockQuantity: item.stockQuantity };
                 return updatedCart;
             } else {
                 return [...prevCart, item];

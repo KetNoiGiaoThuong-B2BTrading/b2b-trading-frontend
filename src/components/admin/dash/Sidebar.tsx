@@ -6,7 +6,7 @@ import LogoutBtn from '..//../common/LogoutBtn';
 export default function Sidebar() {
     const location = useLocation();
     const pathname = location.pathname;
-    console.log(pathname);
+    // console.log(pathname);
     const menuItems = [
         { label: 'Bảng điều khiển', href: '/admin/dashboard', icon: <Layers /> },
         { label: 'Tài khoản', href: '/admin/dashboard/account', icon: <User /> },
@@ -29,9 +29,7 @@ export default function Sidebar() {
                         to={item.href}
                         className={cn(
                             'my-1 flex h-[42px] items-center rounded-2xl px-2',
-                            pathname === item.href
-                                ? 'bg-blue-500 text-white'
-                                : 'text-[#333] hover:bg-blue-100',
+                            pathname === item.href ? 'bg-blue-500 text-white' : 'text-[#333] hover:bg-blue-100',
                         )}
                     >
                         <span className="me-2">{item.icon}</span>
