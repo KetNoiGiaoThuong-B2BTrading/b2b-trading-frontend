@@ -5,7 +5,12 @@ export const API_ENDPOINTS = {
     register: `${API_BASE_URL}/auth/register`,
     login: `${API_BASE_URL}/auth/login`,
     logout: `${API_BASE_URL}/auth/logout`,
-    // me: `${API_BASE_URL}/auth/me`,
+    me: `${API_BASE_URL}/auth/me`,
+
+    // Dashboard
+    getDashboardStats: `${API_BASE_URL}/admin/dashboard/stats`,
+    getRecentActivities: `${API_BASE_URL}/admin/dashboard/activities`,
+    getDashboardCharts: `${API_BASE_URL}/admin/dashboard/charts`,
 
     updateUser: (user_id: number) => `${API_BASE_URL}/users/update/${user_id}`,
 
