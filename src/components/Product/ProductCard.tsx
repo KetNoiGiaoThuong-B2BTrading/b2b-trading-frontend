@@ -105,7 +105,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </div>
 
             {/* Content section */}
-            <div className="flex flex-col justify-between px-4 pt-3 pb-4 flex-1 text-[15px]">
+            <div className="flex flex-col justify-between px-4 pt-3 flex-1 text-[15px]">
             <div>
                 <p className="text-sm text-zinc-500">{product.brand} | Part No. {product.partNo}</p>
 
@@ -121,9 +121,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
                 <div className="mt-3 text-sm">
                 <span className="text-sm text-blue-600">your price:</span>{' '}
-                <span className="font-bold text-xl text-blue-600">{product.price}.000đ</span>{' '}
+                <span className="font-bold text-xl text-blue-600">{product.price}đ</span>{' '}
                 {product.oldPrice && (
-                    <span className="text-sm text-orange-500 line-through ml-1">{product.oldPrice}.000đ</span>
+                    <span className="text-sm text-orange-500 line-through ml-1">{product.oldPrice}đ</span>
                 )}
                 </div>
             </div>
@@ -142,31 +142,35 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 </select>
                 </div>
 
+                <div className="flex gap-2 mt-4 w-full">
                 <button
-                onClick={(e) => {
+                    onClick={(e) => {
                     e.stopPropagation();
                     handleContactCompany();
-                }}
-                className="w-full px-4 py-2 mt-3 text-sm font-medium text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50"
+                    }}
+                    className="w-1/2 px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50"
                 >
-                Liên hệ
+                    Liên hệ
                 </button>
 
                 <button
-                onClick={handleUpdateCart}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    handleUpdateCart();
+                }}
                 disabled={!product.inStock}
-                className={`w-full px-4 py-3 mt-2 text-sm font-medium text-white rounded-full ${
-                    product.inStock ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'
-                }`}
+                className={`w-1/2 px-4 py-2 text-sm font-medium text-white rounded-full 
+                    ${product.inStock ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'}`}
                 >
                 {isAlreadyInCart ? 'Cập nhật' : 'Thêm vào giỏ'}
                 </button>
+                </div>
             </div>
             </div>
         </div>
 
         {showAddedMessage && (
-            <div className="flex gap-2 justify-center px-6 py-2 text-blue-600 bg-sky-100 mt-3 rounded">
+            <div className="flex gap-2 justify-center px-6 py-2 text-blue-600 bg-sky-100 rounded">
             <img src="/products/added.png" alt="Success" className="w-4 h-4" />
             <p className="text-blue-600 text-sm">Đã thêm vào giỏ</p>
             </div>

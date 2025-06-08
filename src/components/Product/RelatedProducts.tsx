@@ -124,7 +124,7 @@ export default function RelatedProducts({ title }: RelatedProductsProps) {
     }
 
     return (
-        <section className="py-6 px-20 bg-white">
+        <section className="py-6 px-11 bg-white">
             <div className="flex justify-between w-full mb-8">
                 <h2 className="text-2xl font-bold leading-tight text-neutral-950">{title}</h2>
             </div>
