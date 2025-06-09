@@ -24,6 +24,7 @@ import CompaniesPage from '../pages/company/CompaniesPage';
 import CompanyProfilePage from '../pages/company/CompanyProfilePage';
 import CategoryPage from '../pages/admin/CategoryPage';
 import CategoriesPage from '../pages/category/CategoriesPage';
+import ContentPage from '../pages/admin/ContentPage';
 import ProductsPage from '../pages/product/ProductsPage';
 import ProductDetailPage from '../pages/product/ProductDetailPage';
 import ProfilePage from '../pages/home/ProfilePage';
@@ -80,6 +81,7 @@ const router = createBrowserRouter([
             { path: 'merchandise', Component: MerchandisePage },
             { path: 'category', Component: CategoryPage },
             { path: 'contract', Component: ContractPage },
+            { path: 'content', Component: ContentPage },
             { path: 'payments', Component: PaymentPage },
             { path: 'reports', Component: ReportPage },
             { path: 'settings', Component: SettingPage },

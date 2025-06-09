@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router';
 import { cn } from '../../../lib/utils';
-import { Layers, Briefcase, User, CreditCard, Box, DollarSign, Settings, Tag } from 'react-feather';
+import { Layers, Briefcase, User, CreditCard, Box, DollarSign, Settings, Tag, FileText } from 'react-feather';
 import LogoutBtn from '..//../common/LogoutBtn';
 
 export default function Sidebar() {
@@ -13,6 +13,7 @@ export default function Sidebar() {
         { label: 'Sản phẩm', href: '/admin/dashboard/merchandise', icon: <Box /> },
         { label: 'Danh mục', href: '/admin/dashboard/category', icon: <Tag /> },
         { label: 'Hợp đồng', href: '/admin/dashboard/contract', icon: <Briefcase /> },
+        { label: 'Quản lý nội dung', href: '/admin/dashboard/content', icon: <FileText /> },
         { label: 'Giao dịch & thanh toán', href: '/admin/dashboard/payments', icon: <DollarSign /> },
         { label: 'Khiếu nại, vi phạm', href: '/admin/dashboard/reports', icon: <CreditCard /> },
         { label: 'Cài đặt chung', href: '/admin/dashboard/settings', icon: <Settings /> },
