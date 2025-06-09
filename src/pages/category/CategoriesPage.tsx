@@ -122,31 +122,6 @@ const CategoriesPage = () => {
                         <p className="text-gray-500">Đang tải danh mục...</p>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {categories
-                                .filter((category) => category.parentCategoryID === null)
-                                .map((category, index) => (
-                                    <button
-                                        key={index}
-                                        className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
-                                        onClick={() => handleCategoryClick(category.categoryID)} // thêm xử lý click
-                                    >
-                                        <div className="aspect-w-16 aspect-h-10">
-                                            <img
-                                                src={category.categoryImage}
-                                                alt={category.categoryName}
-                                                className="w-full h-48 object-cover"
-                                            />
-                                        </div>
-                                        <div className="p-6">
-                                            <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                                                {category.categoryName}
-                                            </h3>
-                                            <p className="text-gray-600 text-sm leading-relaxed">
-                                                {category.categoryDescription}
-                                            </p>
-                                        </div>
-                                    </button>
-                                ))}
                             {categories.map((category, index) => (
                                 <button
                                     key={index}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import Cookies from 'js-cookie';
-import { Search } from 'lucide-react';
+import { Search, User2 } from 'lucide-react';
 
 interface User {
   userID: number;
@@ -21,9 +21,10 @@ const Header = () => {
         if (token) {
         const data = JSON.parse(token);
         setUser(data);
+        } else {
+          setUser(null);
         }
-    }, []);
-
+    }, [location]);
     const [searchType, setSearchType] = useState<'product' | 'companie'>('product');
     const [keyword, setKeyword] = useState('');
 
@@ -96,9 +97,21 @@ const Header = () => {
 
             <div className="flex items-center space-x-4">
               {user?.fullName ? (
-                <button onClick={() => navigate('/profiles')} className="text-white hover:underline">
+                <button
+                onClick={() => {
+                  if (!user) return;
+              
+                  if (user.role === 'User' || user.role === 'Company') {
+                    navigate('/profiles');
+                  }
+                }}
+                  className="text-white hover:underline flex items-center space-x-2"
+                >
+                  <div className="w-6 h-6 mr-2 flex items-center justify-center rounded-full border border-white">
+                    <User2 className="w-4 h-4 text-white" />
+                  </div>
                   {user.fullName}
-                </button>
+                </button>              
               ) : (
                 <>
                   <button onClick={() => navigate('/auth/login')} className="text-white text-sm border border-white hover:border-blue-400 hover:text-blue-400 px-3 py-1 rounded-full">

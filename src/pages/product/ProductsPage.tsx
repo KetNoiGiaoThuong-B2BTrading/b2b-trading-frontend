@@ -15,6 +15,7 @@ interface Product {
     status: string;
     createdDate: string;
     categoryID: number;
+    companyID: number;
 }
 
 const ProductPage = () => {
@@ -62,55 +63,83 @@ const ProductPage = () => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                const response = await api.get(API_ENDPOINTS.getAllProducts);
-
-                let fetchedProducts: Product[] = [];
-
-                if (Array.isArray(response.data)) {
-                    fetchedProducts = response.data;
-                } else if (Array.isArray(response.data.data)) {
-                    fetchedProducts = response.data.data;
-                } else {
-                    console.warn('Dữ liệu từ API không hợp lệ, sử dụng fallback.');
-                    // fetchedProducts = fallbackProducts;
-                }
-
-                // Cập nhật cả allProducts và filteredProducts
-                setAllProducts(fetchedProducts);
+              const response = await api.get(API_ENDPOINTS.getAllProducts);
+          
+              let fetchedProducts: Product[] = [];
+          
+              if (Array.isArray(response.data)) {
+                fetchedProducts = response.data;
+              } else if (Array.isArray(response.data.data)) {
+                fetchedProducts = response.data.data;
+              }
+          
+              setAllProducts(fetchedProducts);
+          
+              // Lọc ngay tại đây
+              const categoryID = Number(searchParams.get('categoryID'));
+              if (!isNaN(categoryID) && categoryID > 0) {
+                const filtered = fetchedProducts.filter(p => p.categoryID === categoryID);
+                setFilteredProducts(filtered);
+                setResultsCount(filtered.length);
+              } else {
                 setFilteredProducts(fetchedProducts);
                 setResultsCount(fetchedProducts.length);
+              }
             } catch (error) {
                 console.error('Lỗi khi gọi API:', error);
                 // setAllProducts(fallbackProducts);
                 // setFilteredProducts(fallbackProducts);
                 // setResultsCount(fallbackProducts.length);
             } finally {
-                setLoading(false);
+              setLoading(false);
             }
-        };
+          };          
 
         fetchProducts();
     }, []);
 
     // Hàm xử lý khi filter thay đổi
     const handleFilterChange = (filtered: Product[]) => {
-        setFilteredProducts(filtered);
-        setResultsCount(filtered.length);
-
+        const sorted = sortProducts(filtered, sort);
+        setFilteredProducts(sorted);
+        setResultsCount(sorted.length);
+      
         if (hasFilteredOnce && currentPage !== 1) {
-            changePage(1);
+          changePage(1);
         }
-
+      
         if (!hasFilteredOnce) {
-            setHasFilteredOnce(true);
+          setHasFilteredOnce(true);
         }
-    };
+    };      
 
+    const sortProducts = (products: Product[], sortType: string) => {
+        const sorted = [...products];
+        switch (sortType) {
+          case 'priceLow':
+            return sorted.sort((a, b) => a.unitPrice - b.unitPrice);
+          case 'priceHigh':
+            return sorted.sort((a, b) => b.unitPrice - a.unitPrice);
+          case 'newest':
+            return sorted.sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime());
+          case 'popular':
+          default:
+            return sorted;
+        }
+    };      
+
+    useEffect(() => {
+        const sorted = sortProducts(filteredProducts, sort);
+        setFilteredProducts(sorted);
+      }, [sort]);
+      
     // Phân trang trên filteredProducts
     const paginatedProducts = filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     // Lọc ra sản phẩm đề xuất từ filteredProducts (hoặc bạn muốn từ allProducts cũng được)
     const recommendedProducts = filteredProducts.filter((p) => p.status === 'Available').slice(0, 4);
+
+    const categoryID = Number(searchParams.get('categoryID'));
 
     return (
         <div className="min-h-screen">
@@ -118,7 +147,7 @@ const ProductPage = () => {
                 <div className="flex flex-col md:flex-row gap-6">
                     <div className="w-full md:w-1/4">
                         {/* Truyền allProducts cho FilterSection để filter luôn trên dữ liệu gốc */}
-                        <FilterSection onFilterChange={handleFilterChange} products={allProducts} />
+                        <FilterSection onFilterChange={handleFilterChange} products={allProducts} initialCategoryID={categoryID} />
                     </div>
 
                     <div className="w-full md:w-3/4">
