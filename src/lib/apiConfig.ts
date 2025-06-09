@@ -7,15 +7,10 @@ export const API_ENDPOINTS = {
     logout: `${API_BASE_URL}/auth/logout`,
     me: `${API_BASE_URL}/auth/me`,
 
-    // Dashboard
-    getDashboardStats: `${API_BASE_URL}/admin/dashboard/stats`,
-    getRecentActivities: `${API_BASE_URL}/admin/dashboard/activities`,
-    getDashboardCharts: `${API_BASE_URL}/admin/dashboard/charts`,
-
     updateUser: (user_id: number) => `${API_BASE_URL}/users/update/${user_id}`,
 
     // Companies
-    getAllCompanies: `${API_BASE_URL}/Company/all`,
+    getAllCompany: `${API_BASE_URL}/Company/all`,
     getCompanyInfoById: (user_id: number) => `${API_BASE_URL}/company/${user_id}`,
     updateCompanyInfo: (company_id: number) => `${API_BASE_URL}/company/${company_id}`,
     deleteCompanyInfo: (company_id: number) => `${API_BASE_URL}/company/${company_id}`,
@@ -23,11 +18,11 @@ export const API_ENDPOINTS = {
     completeProfile: `${API_BASE_URL}/company/create`,
     getCompanyProfileById: (company_id: number) => `${API_BASE_URL}/Company/${company_id}`,
     // Products
-    getAllProducts: `${API_BASE_URL}/product/all`,
+    getAllProduct: `${API_BASE_URL}/product/all`,
     getProductById: (product_id: number) => `${API_BASE_URL}/product/${product_id}`,
     getProductsByCompanyId: (company_id: number) => `${API_BASE_URL}/product/${company_id}`,
     // Categories
-    getAllCategories: `${API_BASE_URL}/Category/all`,
+    getAllCategory: `${API_BASE_URL}/Category/all`,
     // Events
     // getAllEvents: `${API_BASE_URL}/events`,
     // Articles
@@ -38,6 +33,43 @@ export const API_ENDPOINTS = {
     // getAllColors: `${API_BASE_URL}/colors`,
     // getMaxPrice: `${API_BASE_URL}/maxPrice`,
     // getProductsByFilters: `${API_BASE_URL}/products/get-by-filters`,
+
+    // Dashboard
+    getDashboardStats: `${API_BASE_URL}/Admin/Dashboard/stats`,
+    getRecentActivities: `${API_BASE_URL}/Admin/Dashboard/activities`,
+    getDashboardCharts: `${API_BASE_URL}/Admin/Dashboard/charts`,
+
+    // User Management
+    getAllUsers: `${API_BASE_URL}/Admin/Users`,
+    updateUserStatus: (userId: number) => `${API_BASE_URL}/Admin/Users/${userId}/status`,
+
+    // Company Management
+    getAllCompanies: `${API_BASE_URL}/Admin/Companies`,
+    verifyCompany: (companyId: number) => `${API_BASE_URL}/Admin/Companies/${companyId}/verify`,
+
+    // Category Management
+    getAllCategories: `${API_BASE_URL}/Admin/Categories`,
+    createCategory: `${API_BASE_URL}/Admin/Categories`,
+    updateCategory: (categoryId: number) => `${API_BASE_URL}/Admin/Categories/${categoryId}`,
+
+    // Contract Management
+    getAllContracts: `${API_BASE_URL}/Admin/Contracts`,
+    updateContractStatus: (contractId: number) => `${API_BASE_URL}/Admin/Contracts/${contractId}/status`,
+
+    // Product Management
+    getAllProducts: `${API_BASE_URL}/Admin/Products`,
+    approveProduct: (productId: number) => `${API_BASE_URL}/Admin/Products/${productId}/approve`,
+
+    // Quote Management
+    getAllQuotes: `${API_BASE_URL}/admin/quotes`,
+    updateQuoteStatus: (quoteId: number) => `${API_BASE_URL}/admin/quotes/${quoteId}/status`,
+
+    // Content Management
+    getAllContents: `${API_BASE_URL}/admin/contents`,
+    createContent: `${API_BASE_URL}/admin/contents`,
+    updateContent: (contentId: number) => `${API_BASE_URL}/admin/contents/${contentId}`,
+
+    // Product Reviews & Questions
     updateProductReview: (productId: number) => `${API_BASE_URL}/products/${productId}/reviews`,
     updateProductQuestion: (productId: number) => `${API_BASE_URL}/products/${productId}/questions`,
     getProductQuestions: (productId: number) => `${API_BASE_URL}/products/${productId}/questions`,
