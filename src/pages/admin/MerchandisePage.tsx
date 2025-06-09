@@ -1,7 +1,9 @@
-export default function AccountPage() {
+import ProductManagement from '../../components/admin/ProductManagement';
+
+export default function MerchandisePage() {
     return (
-        <div>
-            <h1>Trang quản lý sản phẩm</h1>
+        <div className="container mx-auto px-4 py-8">
+            <ProductManagement />
         </div>
-    )
+    );
 }

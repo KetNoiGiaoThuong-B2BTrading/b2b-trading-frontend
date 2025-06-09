@@ -1,6 +1,17 @@
 import { Link, useLocation } from 'react-router';
 import { cn } from '../../../lib/utils';
-import { Layers, Briefcase, User, CreditCard, Box, DollarSign, Settings } from 'react-feather';
+import {
+    Layers,
+    Briefcase,
+    User,
+    CreditCard,
+    Box,
+    DollarSign,
+    Settings,
+    Tag,
+    FileText,
+    BarChart2,
+} from 'react-feather';
 import LogoutBtn from '..//../common/LogoutBtn';
 
 export default function Sidebar() {
@@ -11,14 +22,17 @@ export default function Sidebar() {
         { label: 'Bảng điều khiển', href: '/admin/dashboard', icon: <Layers /> },
         { label: 'Tài khoản', href: '/admin/dashboard/account', icon: <User /> },
         { label: 'Sản phẩm', href: '/admin/dashboard/merchandise', icon: <Box /> },
+        { label: 'Danh mục', href: '/admin/dashboard/category', icon: <Tag /> },
         { label: 'Hợp đồng', href: '/admin/dashboard/contract', icon: <Briefcase /> },
+        { label: 'Quản lý nội dung', href: '/admin/dashboard/content', icon: <FileText /> },
+        { label: 'Dữ liệu và thống kê', href: '/admin/dashboard/statistic', icon: <BarChart2 /> },
         { label: 'Giao dịch & thanh toán', href: '/admin/dashboard/payments', icon: <DollarSign /> },
         { label: 'Khiếu nại, vi phạm', href: '/admin/dashboard/reports', icon: <CreditCard /> },
         { label: 'Cài đặt chung', href: '/admin/dashboard/settings', icon: <Settings /> },
     ];
 
     return (
-        <div className="h-screen w-[250px] bg-white shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]">
+        <div className="w-[250px] bg-white shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]">
             <div className="flex h-[200px] w-[200px] items-center justify-center bg-(--color-primary)">
                 <img src="/logo.png" alt="Logo" width={180} height={153} />
             </div>
