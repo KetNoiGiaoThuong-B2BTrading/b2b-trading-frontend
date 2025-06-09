@@ -18,11 +18,13 @@ interface Product {
     status: string;
     createdDate: string;
     categoryID: number;
+    companyID: number;
 }
 
 interface Props {
     onFilterChange: (products: Product[]) => void;
     products: Product[];
+    initialCategoryID?: number;
 }
 
 const fallbackcategories: Category[] = [
@@ -35,7 +37,7 @@ const fallbackcategories: Category[] = [
 
 // const fallbackColors: string[] = ['red', 'brown', 'yellow', 'green', 'blue', 'indigo', 'purple', 'pink'];
 
-const FilterSection = ({ onFilterChange, products }: Props) => {
+const FilterSection = ({ onFilterChange, products, initialCategoryID }: Props) => {
     const [searchParams] = useSearchParams();
 
     const [categories, setCategories] = useState<Category[]>([]);
@@ -74,6 +76,14 @@ const FilterSection = ({ onFilterChange, products }: Props) => {
     }, [range]);
 
     useEffect(() => {
+        if (initialCategoryID && categories.length > 0) {
+          if (!selectedCatIds.includes(initialCategoryID)) {
+            setSelectedCatIds([initialCategoryID]);
+          }
+        }
+      }, [initialCategoryID, categories]);
+      
+    useEffect(() => {
         const categoryFromUrl = searchParams.get('category');
         if (categoryFromUrl && categories.length > 0) {
             const matched = categories.find(
@@ -87,7 +97,7 @@ const FilterSection = ({ onFilterChange, products }: Props) => {
 
     useEffect(() => {
         const savedFilters = localStorage.getItem('filters');
-        if (savedFilters) {
+        if (!initialCategoryID && savedFilters) {
             try {
                 const parsed = JSON.parse(savedFilters);
                 if (parsed.categories) setSelectedCatIds(parsed.categories);
@@ -159,23 +169,28 @@ const FilterSection = ({ onFilterChange, products }: Props) => {
     // };
     const fetchFilteredProducts = async (filters: any) => {
         try {
-            const filtered = products.filter((p) => {
-                const priceMatch = p.unitPrice >= filters.range[0] && p.unitPrice <= filters.range[1];    
-                const categoryMatch = filters.categories.length === 0 || filters.categories.includes(p.categoryID);
-                return priceMatch && categoryMatch;
+          let filtered: Product[] = [];
+      
+          const noCategorySelected = filters.categories.length === 0;
+          const fullRange = filters.range[0] === 0 && filters.range[1] === 1000000000;
+      
+          if (noCategorySelected && fullRange) {
+            filtered = products;
+          } else {
+            filtered = products.filter((p) => {
+              const priceMatch = p.unitPrice >= filters.range[0] && p.unitPrice <= filters.range[1];
+              const categoryMatch =
+                filters.categories.length === 0 || filters.categories.includes(p.categoryID);
+              return priceMatch && categoryMatch;
             });
-            onFilterChange(filtered);
+          }
+      
+          onFilterChange(filtered);
         } catch (err) {
-            console.error('Failed to fetch filtered products:', err);
-            const filteredFallback = products.filter(
-                (p) =>
-                    p.unitPrice >= filters.range[0] &&
-                    p.unitPrice <= filters.range[1] &&
-                    (filters.categories.length === 0 || filters.categories.includes(p.categoryID))
-            );
-            onFilterChange(filteredFallback);
+          console.error('Failed to fetch filtered products:', err);
+          onFilterChange(products);
         }
-    };    
+      };         
 
     useEffect(() => {
         //console.log('filtersLoaded:', filtersLoaded);
@@ -215,6 +230,12 @@ const FilterSection = ({ onFilterChange, products }: Props) => {
         }
     };
 
+    useEffect(() => {
+        return () => {
+          localStorage.removeItem('filters');
+        };
+      }, []);
+      
     if (loading || !filtersLoaded) return <div className="px-6 py-4 text-gray-500 text-sm">Loading filters...</div>;
 
     return (

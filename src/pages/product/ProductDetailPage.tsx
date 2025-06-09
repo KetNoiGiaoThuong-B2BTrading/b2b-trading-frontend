@@ -216,7 +216,7 @@ const ProductDetailPage = () => {
         </section>
 
         <NewsletterBanner />
-        <RelatedProducts title="Sản phẩm liên quan" />
+        <RelatedProducts title="Sản phẩm khác" />
     </main>
     );
 }
