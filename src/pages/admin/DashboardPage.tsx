@@ -17,100 +17,116 @@ interface User {
 interface DashboardStats {
     totalCompanies: number;
     totalProducts: number;
-    totalQuotes: number;
+    totalContracts: number;
+    totalUsers: number;
+    pendingVerifications: number;
+    activeContracts: number;
     totalRevenue: number;
-    dailyActiveUsers: number;
-    monthlyActiveUsers: number;
 }
 
 interface Activity {
-    id: number;
-    type: string;
-    description: string;
-    time: string;
+    action: string;
+    actionTime: string;
+    notes: string;
+    userName: string;
+    contractTitle: string;
 }
 
 interface ChartData {
-    name: string;
-    value: number;
+    year: number;
+    month: number;
+    contractCount: number;
+    totalValue: number;
 }
 
 // Dữ liệu giả cho dashboard
 const mockStats: DashboardStats = {
     totalCompanies: 1234,
     totalProducts: 5678,
-    totalQuotes: 890,
+    totalContracts: 890,
+    totalUsers: 234,
+    pendingVerifications: 1234,
+    activeContracts: 1234,
     totalRevenue: 123456789,
-    dailyActiveUsers: 234,
-    monthlyActiveUsers: 1234,
 };
 
 const mockActivities: Activity[] = [
     {
-        id: 1,
-        type: 'company',
-        description: 'Doanh nghiệp mới đã đăng ký: Công ty TNHH ABC',
-        time: '5 phút trước',
+        action: 'company',
+        actionTime: '5 phút trước',
+        notes: 'Doanh nghiệp mới đã đăng ký: Công ty TNHH ABC',
+        userName: '',
+        contractTitle: '',
     },
     {
-        id: 2,
-        type: 'quote',
-        description: 'Yêu cầu báo giá mới từ Công ty XYZ',
-        time: '10 phút trước',
+        action: 'quote',
+        actionTime: '10 phút trước',
+        notes: 'Yêu cầu báo giá mới từ Công ty XYZ',
+        userName: '',
+        contractTitle: '',
     },
     {
-        id: 3,
-        type: 'product',
-        description: 'Sản phẩm mới đã được thêm vào: Máy CNC XYZ',
-        time: '15 phút trước',
+        action: 'product',
+        actionTime: '15 phút trước',
+        notes: 'Sản phẩm mới đã được thêm vào: Máy CNC XYZ',
+        userName: '',
+        contractTitle: '',
     },
     {
-        id: 4,
-        type: 'contract',
-        description: 'Hợp đồng mới đã được ký kết',
-        time: '20 phút trước',
+        action: 'contract',
+        actionTime: '20 phút trước',
+        notes: 'Hợp đồng mới đã được ký kết',
+        userName: '',
+        contractTitle: '',
     },
     {
-        id: 5,
-        type: 'company',
-        description: 'Doanh nghiệp đã cập nhật thông tin',
-        time: '25 phút trước',
+        action: 'company',
+        actionTime: '25 phút trước',
+        notes: 'Doanh nghiệp đã cập nhật thông tin',
+        userName: '',
+        contractTitle: '',
     },
 ];
 
 // Dữ liệu giả cho biểu đồ
 const mockMonthlyCompanies: ChartData[] = [
-    { name: 'T1', value: 30 },
-    { name: 'T2', value: 45 },
-    { name: 'T3', value: 60 },
-    { name: 'T4', value: 75 },
-    { name: 'T5', value: 90 },
-    { name: 'T6', value: 120 },
+    { year: 2024, month: 1, contractCount: 30, totalValue: 123456 },
+    { year: 2024, month: 2, contractCount: 45, totalValue: 185184 },
+    { year: 2024, month: 3, contractCount: 60, totalValue: 246912 },
+    { year: 2024, month: 4, contractCount: 75, totalValue: 308640 },
+    { year: 2024, month: 5, contractCount: 90, totalValue: 370368 },
+    { year: 2024, month: 6, contractCount: 120, totalValue: 493824 },
 ];
 
 const mockCategoryTransactions: ChartData[] = [
-    { name: 'Máy móc', value: 400 },
-    { name: 'Vật tư', value: 300 },
-    { name: 'Dịch vụ', value: 200 },
-    { name: 'Khác', value: 100 },
+    { year: 2024, month: 1, contractCount: 400, totalValue: 160000 },
+    { year: 2024, month: 2, contractCount: 300, totalValue: 120000 },
+    { year: 2024, month: 3, contractCount: 200, totalValue: 80000 },
+    { year: 2024, month: 4, contractCount: 100, totalValue: 40000 },
 ];
 
 const mockOrderTimeline: ChartData[] = [
-    { name: 'T1', value: 20 },
-    { name: 'T2', value: 35 },
-    { name: 'T3', value: 25 },
-    { name: 'T4', value: 40 },
-    { name: 'T5', value: 30 },
-    { name: 'T6', value: 45 },
+    { year: 2024, month: 1, contractCount: 20, totalValue: 8000 },
+    { year: 2024, month: 2, contractCount: 35, totalValue: 14000 },
+    { year: 2024, month: 3, contractCount: 25, totalValue: 10000 },
+    { year: 2024, month: 4, contractCount: 40, totalValue: 16000 },
+    { year: 2024, month: 5, contractCount: 30, totalValue: 12000 },
+    { year: 2024, month: 6, contractCount: 45, totalValue: 18000 },
 ];
 
 export default function DashboardPage() {
     const [userData, setUserData] = useState<User | null>(null);
-    const [stats, setStats] = useState<DashboardStats>(mockStats);
-    const [activities, setActivities] = useState<Activity[]>(mockActivities);
-    const [monthlyCompanies, setMonthlyCompanies] = useState<ChartData[]>(mockMonthlyCompanies);
-    const [categoryTransactions, setCategoryTransactions] = useState<ChartData[]>(mockCategoryTransactions);
-    const [orderTimeline, setOrderTimeline] = useState<ChartData[]>(mockOrderTimeline);
+    const [stats, setStats] = useState<DashboardStats>({
+        totalCompanies: 0,
+        totalProducts: 0,
+        totalContracts: 0,
+        totalUsers: 0,
+        pendingVerifications: 0,
+        activeContracts: 0,
+        totalRevenue: 0,
+    });
+    const [activities, setActivities] = useState<Activity[]>([]);
+    const [chartData, setChartData] = useState<ChartData[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -130,21 +146,18 @@ export default function DashboardPage() {
 
                 // Fetch recent activities
                 const activitiesResponse = await api.get(API_ENDPOINTS.getRecentActivities);
-                const activitiesData = activitiesResponse.data;
-                if (Array.isArray(activitiesData) && activitiesData.length > 0) {
-                    setActivities(activitiesData);
+                if (Array.isArray(activitiesResponse.data)) {
+                    setActivities(activitiesResponse.data);
                 }
 
                 // Fetch chart data
                 const chartsResponse = await api.get(API_ENDPOINTS.getDashboardCharts);
-                if (chartsResponse.data) {
-                    setMonthlyCompanies(chartsResponse.data.monthlyCompanies || mockMonthlyCompanies);
-                    setCategoryTransactions(chartsResponse.data.categoryTransactions || mockCategoryTransactions);
-                    setOrderTimeline(chartsResponse.data.orderTimeline || mockOrderTimeline);
+                if (Array.isArray(chartsResponse.data)) {
+                    setChartData(chartsResponse.data);
                 }
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
-                setError('Không thể tải dữ liệu từ server. Đang hiển thị dữ liệu mẫu.');
+                setError('Không thể tải dữ liệu từ server.');
             } finally {
                 setLoading(false);
             }
@@ -186,38 +199,38 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 <StatCard
                     title="Tổng doanh nghiệp"
-                    value={stats.totalCompanies || 0}
+                    value={stats.totalCompanies}
                     icon={<FaBuilding className="text-white text-xl" />}
                     color="bg-blue-500"
                 />
                 <StatCard
                     title="Tổng sản phẩm"
-                    value={stats.totalProducts || 0}
+                    value={stats.totalProducts}
                     icon={<FaBox className="text-white text-xl" />}
                     color="bg-green-500"
                 />
                 <StatCard
-                    title="Yêu cầu báo giá"
-                    value={stats.totalQuotes || 0}
+                    title="Tổng hợp đồng"
+                    value={stats.totalContracts}
                     icon={<FaFileContract className="text-white text-xl" />}
                     color="bg-purple-500"
                 />
                 <StatCard
-                    title="Doanh thu"
-                    value={formatCurrency(stats.totalRevenue)}
-                    icon={<FaChartLine className="text-white text-xl" />}
-                    color="bg-yellow-500"
-                />
-                <StatCard
-                    title="Người dùng hoạt động (ngày)"
-                    value={stats.dailyActiveUsers || 0}
+                    title="Tổng người dùng"
+                    value={stats.totalUsers}
                     icon={<FaUsers className="text-white text-xl" />}
                     color="bg-red-500"
                 />
                 <StatCard
-                    title="Người dùng hoạt động (tháng)"
-                    value={stats.monthlyActiveUsers || 0}
-                    icon={<FaUsers className="text-white text-xl" />}
+                    title="Doanh nghiệp chờ xác minh"
+                    value={stats.pendingVerifications}
+                    icon={<FaBuilding className="text-white text-xl" />}
+                    color="bg-yellow-500"
+                />
+                <StatCard
+                    title="Hợp đồng đang thực hiện"
+                    value={stats.activeContracts}
+                    icon={<FaFileContract className="text-white text-xl" />}
                     color="bg-indigo-500"
                 />
             </div>
@@ -225,17 +238,9 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <RecentActivity activities={activities} />
                 <div className="bg-white rounded-lg shadow-md p-6">
-                    <h2 className="text-xl font-semibold mb-4">Thống kê truy cập</h2>
-                    {/* Thêm biểu đồ thống kê truy cập ở đây */}
+                    <h2 className="text-xl font-semibold mb-4">Thống kê doanh thu</h2>
+                    <DashboardCharts chartData={chartData} />
                 </div>
-            </div>
-
-            <div className="mt-6">
-                <DashboardCharts
-                    monthlyCompanies={monthlyCompanies}
-                    categoryTransactions={categoryTransactions}
-                    orderTimeline={orderTimeline}
-                />
             </div>
         </div>
     );

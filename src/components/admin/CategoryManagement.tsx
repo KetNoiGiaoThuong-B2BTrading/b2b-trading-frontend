@@ -4,95 +4,43 @@ import api from '../../lib/axios';
 import { API_ENDPOINTS } from '../../lib/apiConfig';
 
 interface Category {
-    id: string;
-    name: string;
-    description: string;
-    type: 'business' | 'product';
-    parentId?: string;
-    createdAt: string;
+    categoryID: number;
+    categoryName: string;
+    parentCategoryName?: string | null;
+    imageCategoly?: string;
 }
-
-interface Business {
-    id: string;
-    name: string;
-    categoryId: string;
-}
-
-interface Product {
-    id: string;
-    name: string;
-    categoryId: string;
-}
-
-// Dữ liệu mẫu cho testing
-const mockCategories: Category[] = [
-    {
-        id: '1',
-        name: 'Công nghệ thông tin',
-        description: 'Các doanh nghiệp và sản phẩm liên quan đến CNTT',
-        type: 'business',
-        createdAt: new Date().toISOString(),
-    },
-    {
-        id: '2',
-        name: 'Máy móc công nghiệp',
-        description: 'Các sản phẩm máy móc công nghiệp',
-        type: 'product',
-        createdAt: new Date().toISOString(),
-    },
-];
-
-const mockBusinesses: Business[] = [
-    { id: '1', name: 'Công ty TNHH ABC', categoryId: '1' },
-    { id: '2', name: 'Công ty XYZ', categoryId: '1' },
-];
-
-const mockProducts: Product[] = [
-    { id: '1', name: 'Máy CNC XYZ', categoryId: '2' },
-    { id: '2', name: 'Máy in 3D', categoryId: '2' },
-];
 
 export default function CategoryManagement() {
     const [categories, setCategories] = useState<Category[]>([]);
-    const [businesses, setBusinesses] = useState<Business[]>([]);
-    const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState<'create' | 'edit'>('create');
-    const [activeTab, setActiveTab] = useState<'categories' | 'assignments'>('categories');
 
     useEffect(() => {
-        fetchData();
+        fetchCategories();
     }, []);
 
-    const fetchData = async () => {
+    const fetchCategories = async () => {
         try {
-            // Sử dụng dữ liệu mẫu cho testing
-            setCategories(mockCategories);
-            setBusinesses(mockBusinesses);
-            setProducts(mockProducts);
-
-            // Comment lại phần gọi API thực tế
-            // const [categoriesRes, businessesRes, productsRes] = await Promise.all([
-            //     api.get(API_ENDPOINTS.getAllCategories),
-            //     api.get(API_ENDPOINTS.getAllBusinesses),
-            //     api.get(API_ENDPOINTS.getAllProducts),
-            // ]);
-            // setCategories(categoriesRes.data);
-            // setBusinesses(businessesRes.data);
-            // setProducts(productsRes.data);
+            const response = await api.get(API_ENDPOINTS.getAllCategories);
+            setCategories(response.data);
         } catch (error) {
-            console.error('Error fetching data:', error);
-            setError('Không thể tải dữ liệu');
+            console.error('Error fetching categories:', error);
+            setError('Không thể tải danh sách danh mục');
         } finally {
             setLoading(false);
         }
     };
 
     const handleCreate = () => {
-        setSelectedCategory(null);
+        setSelectedCategory({
+            categoryID: 0,
+            categoryName: '',
+            parentCategoryName: null,
+            imageCategoly: 'default.jpg',
+        });
         setModalType('create');
         setIsModalOpen(true);
     };
@@ -103,12 +51,11 @@ export default function CategoryManagement() {
         setIsModalOpen(true);
     };
 
-    const handleDelete = async (categoryId: string) => {
+    const handleDelete = async (categoryId: number) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
             try {
-                // await api.delete(`${API_ENDPOINTS.deleteCategory}/${categoryId}`);
-                // Cập nhật state local cho testing
-                setCategories(categories.filter((category) => category.id !== categoryId));
+                await api.delete(`${API_ENDPOINTS.deleteCategory}/${categoryId}`);
+                await fetchCategories();
             } catch (error) {
                 console.error('Error deleting category:', error);
                 setError('Không thể xóa danh mục');
@@ -121,38 +68,24 @@ export default function CategoryManagement() {
         if (!selectedCategory) return;
 
         try {
+            const categoryData = {
+                categoryName: selectedCategory.categoryName,
+                parentCategoryID: selectedCategory.parentCategoryName
+                    ? categories.find((cat) => cat.categoryName === selectedCategory.parentCategoryName)?.categoryID
+                    : null,
+                imageCategoly: selectedCategory.imageCategoly || 'default.jpg',
+            };
+
             if (modalType === 'create') {
-                // await api.post(API_ENDPOINTS.createCategory, selectedCategory);
-                // Cập nhật state local cho testing
-                setCategories([...categories, { ...selectedCategory, id: Date.now().toString() }]);
+                await api.post(API_ENDPOINTS.createCategory, categoryData);
             } else {
-                // await api.put(`${API_ENDPOINTS.updateCategory}/${selectedCategory.id}`, selectedCategory);
-                // Cập nhật state local cho testing
-                setCategories(
-                    categories.map((category) => (category.id === selectedCategory.id ? selectedCategory : category)),
-                );
+                await api.put(`${API_ENDPOINTS.updateCategory}/${selectedCategory.categoryID}`, categoryData);
             }
+            await fetchCategories();
             setIsModalOpen(false);
         } catch (error) {
             console.error('Error saving category:', error);
             setError('Không thể lưu danh mục');
-        }
-    };
-
-    const handleAssignCategory = async (itemId: string, categoryId: string, type: 'business' | 'product') => {
-        try {
-            // await api.put(`${API_ENDPOINTS.updateItemCategory}/${itemId}`, { categoryId });
-            // Cập nhật state local cho testing
-            if (type === 'business') {
-                setBusinesses(
-                    businesses.map((business) => (business.id === itemId ? { ...business, categoryId } : business)),
-                );
-            } else {
-                setProducts(products.map((product) => (product.id === itemId ? { ...product, categoryId } : product)));
-            }
-        } catch (error) {
-            console.error('Error assigning category:', error);
-            setError('Không thể gán danh mục');
         }
     };
 
@@ -167,32 +100,7 @@ export default function CategoryManagement() {
     return (
         <div className="p-6">
             <div className="mb-6">
-                <h2 className="text-2xl font-bold mb-6">Quản lý danh mục ngành nghề</h2>
-
-                <div className="border-b border-gray-200">
-                    <nav className="-mb-px flex space-x-8">
-                        <button
-                            onClick={() => setActiveTab('categories')}
-                            className={`${
-                                activeTab === 'categories'
-                                    ? 'border-blue-500 text-blue-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-                        >
-                            Danh mục
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('assignments')}
-                            className={`${
-                                activeTab === 'assignments'
-                                    ? 'border-blue-500 text-blue-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-                        >
-                            Phân loại
-                        </button>
-                    </nav>
-                </div>
+                <h2 className="text-2xl font-bold mb-6">Quản lý danh mục</h2>
             </div>
 
             {error && (
@@ -201,201 +109,149 @@ export default function CategoryManagement() {
                 </div>
             )}
 
-            {activeTab === 'categories' ? (
-                <div>
-                    <div className="mb-4">
-                        <button
-                            onClick={handleCreate}
-                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 flex items-center"
-                        >
-                            <FaPlus className="mr-2" />
-                            Thêm danh mục mới
-                        </button>
-                    </div>
+            <div>
+                <div className="mb-4">
+                    <button
+                        onClick={handleCreate}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 flex items-center"
+                    >
+                        <FaPlus className="mr-2" />
+                        Thêm danh mục mới
+                    </button>
+                </div>
 
-                    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Tên danh mục
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Mô tả
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Loại
-                                    </th>
-                                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Thao tác
-                                    </th>
+                <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Tên danh mục
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Danh mục cha
+                                </th>
+                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Thao tác
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {categories.map((category) => (
+                                <tr key={category.categoryID}>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="text-sm font-medium text-gray-900">{category.categoryName}</div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="text-sm text-gray-500">
+                                            {category.parentCategoryName || '-'}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button
+                                            onClick={() => handleEdit(category)}
+                                            className="text-indigo-600 hover:text-indigo-900 mr-4"
+                                        >
+                                            <FaEdit />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(category.categoryID)}
+                                            className="text-red-600 hover:text-red-900"
+                                        >
+                                            <FaTrash />
+                                        </button>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {categories.map((category) => (
-                                    <tr key={category.id}>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm font-medium text-gray-900">{category.name}</div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="text-sm text-gray-500">{category.description}</div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-500">
-                                                {category.type === 'business' ? 'Doanh nghiệp' : 'Sản phẩm'}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button
-                                                onClick={() => handleEdit(category)}
-                                                className="text-blue-600 hover:text-blue-900 mr-3"
-                                            >
-                                                <FaEdit className="inline-block" />
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(category.id)}
-                                                className="text-red-600 hover:text-red-900"
-                                            >
-                                                <FaTrash className="inline-block" />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="bg-white rounded-lg shadow-md p-6">
-                        <h3 className="text-lg font-medium text-gray-900 mb-4">Phân loại doanh nghiệp</h3>
-                        <div className="space-y-4">
-                            {businesses.map((business) => (
-                                <div key={business.id} className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-600">{business.name}</span>
-                                    <select
-                                        value={business.categoryId}
-                                        onChange={(e) => handleAssignCategory(business.id, e.target.value, 'business')}
-                                        className="ml-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                    >
-                                        {categories
-                                            .filter((category) => category.type === 'business')
-                                            .map((category) => (
-                                                <option key={category.id} value={category.id}>
-                                                    {category.name}
-                                                </option>
-                                            ))}
-                                    </select>
-                                </div>
                             ))}
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-lg shadow-md p-6">
-                        <h3 className="text-lg font-medium text-gray-900 mb-4">Phân loại sản phẩm</h3>
-                        <div className="space-y-4">
-                            {products.map((product) => (
-                                <div key={product.id} className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-600">{product.name}</span>
-                                    <select
-                                        value={product.categoryId}
-                                        onChange={(e) => handleAssignCategory(product.id, e.target.value, 'product')}
-                                        className="ml-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                    >
-                                        {categories
-                                            .filter((category) => category.type === 'product')
-                                            .map((category) => (
-                                                <option key={category.id} value={category.id}>
-                                                    {category.name}
-                                                </option>
-                                            ))}
-                                    </select>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
-            )}
+            </div>
 
-            {/* Modal tạo/chỉnh sửa danh mục */}
-            {isModalOpen && (
+            {/* Modal thêm/sửa danh mục */}
+            {isModalOpen && selectedCategory && (
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
                     <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
                         <div className="mt-3">
                             <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
-                                {modalType === 'create' ? 'Thêm danh mục mới' : 'Chỉnh sửa danh mục'}
+                                {modalType === 'create' ? 'Thêm danh mục mới' : 'Sửa danh mục'}
                             </h3>
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <div>
-                                    <label htmlFor="categoryName" className="block text-sm font-medium text-gray-700">
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-4">
+                                    <label
+                                        htmlFor="categoryName"
+                                        className="block text-gray-700 text-sm font-bold mb-2"
+                                    >
                                         Tên danh mục
                                     </label>
                                     <input
                                         id="categoryName"
                                         type="text"
-                                        value={selectedCategory?.name || ''}
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        value={selectedCategory.categoryName}
                                         onChange={(e) =>
-                                            setSelectedCategory({
-                                                ...selectedCategory!,
-                                                name: e.target.value,
-                                            })
+                                            setSelectedCategory({ ...selectedCategory, categoryName: e.target.value })
                                         }
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                         required
                                     />
                                 </div>
-                                <div>
+                                <div className="mb-4">
                                     <label
-                                        htmlFor="categoryDescription"
-                                        className="block text-sm font-medium text-gray-700"
+                                        htmlFor="parentCategory"
+                                        className="block text-gray-700 text-sm font-bold mb-2"
                                     >
-                                        Mô tả
-                                    </label>
-                                    <textarea
-                                        id="categoryDescription"
-                                        value={selectedCategory?.description || ''}
-                                        onChange={(e) =>
-                                            setSelectedCategory({
-                                                ...selectedCategory!,
-                                                description: e.target.value,
-                                            })
-                                        }
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                        rows={3}
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="categoryType" className="block text-sm font-medium text-gray-700">
-                                        Loại danh mục
+                                        Danh mục cha
                                     </label>
                                     <select
-                                        id="categoryType"
-                                        value={selectedCategory?.type || 'business'}
+                                        id="parentCategory"
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        value={selectedCategory.parentCategoryName || ''}
                                         onChange={(e) =>
                                             setSelectedCategory({
-                                                ...selectedCategory!,
-                                                type: e.target.value as Category['type'],
+                                                ...selectedCategory,
+                                                parentCategoryName: e.target.value || null,
                                             })
                                         }
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     >
-                                        <option value="business">Doanh nghiệp</option>
-                                        <option value="product">Sản phẩm</option>
+                                        <option value="">Không có</option>
+                                        {categories
+                                            .filter((cat) => cat.categoryID !== selectedCategory.categoryID)
+                                            .map((cat) => (
+                                                <option key={cat.categoryID} value={cat.categoryName}>
+                                                    {cat.categoryName}
+                                                </option>
+                                            ))}
                                     </select>
+                                </div>
+                                <div className="mb-4">
+                                    <label
+                                        htmlFor="categoryImage"
+                                        className="block text-gray-700 text-sm font-bold mb-2"
+                                    >
+                                        Hình ảnh danh mục
+                                    </label>
+                                    <input
+                                        id="categoryImage"
+                                        type="text"
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        value={selectedCategory.imageCategoly || ''}
+                                        onChange={(e) =>
+                                            setSelectedCategory({ ...selectedCategory, imageCategoly: e.target.value })
+                                        }
+                                    />
                                 </div>
                                 <div className="flex justify-end space-x-3">
                                     <button
                                         type="button"
                                         onClick={() => setIsModalOpen(false)}
-                                        className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                                        className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
                                     >
                                         Hủy
                                     </button>
                                     <button
                                         type="submit"
-                                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                                     >
-                                        {modalType === 'create' ? 'Thêm mới' : 'Lưu thay đổi'}
+                                        {modalType === 'create' ? 'Thêm' : 'Lưu'}
                                     </button>
                                 </div>
                             </form>
