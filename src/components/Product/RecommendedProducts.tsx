@@ -108,9 +108,9 @@ const RecommendedProducts: React.FC = () => {
 
             <div className="w-full">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {products.map((product, index) => (
-                        <ProductCard key={index} product={product} />
-                    ))}
+                {Array.isArray(products) && products.map((product, index) => (
+                    <ProductCard key={index} product={product} />
+                ))}
                 </div>
             </div>
         </section>

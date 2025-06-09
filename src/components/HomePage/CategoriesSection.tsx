@@ -54,22 +54,29 @@ const CategoriesSection = () => {
             try {
                 setLoading(true);
                 const res = await api.get(API_ENDPOINTS.getAllCategories);
-                // console.log("Fetched categories:", res.data);
+                console.log('API response data:', res.data);
                 if (Array.isArray(res.data)) {
-                    setCategories(res.data);
+                    const transformed = res.data.map((item: any) => ({
+                        categoryID: item.categoryID,
+                        categoryName: item.categoryName,
+                        parentCategoryID: item.parentCategoryID,
+                        parentCategoryName: null,
+                        categoryImage: `/categories/${item.imageCategoly}`,
+                    }));
+                    setCategories(transformed);
                 } else {
-                    console.warn('API trả về dữ liệu không hợp lệ. Dùng fallback.');
+                    console.warn('API trả về dữ liệu không phải mảng. Dùng fallback.');
                     setCategories(fallbackCategories);
                 }
             } catch (error) {
-                console.error('Error fetching categories:', error);
+                console.error('Lỗi gọi API:', error);
                 setCategories(fallbackCategories);
             } finally {
                 setLoading(false);
             }
         };
         fetchCategories();
-    }, []);
+    }, []);        
 
     return (
         <section className="py-6 px-20 bg-white">
@@ -89,7 +96,8 @@ const CategoriesSection = () => {
                     <p className="text-gray-500 col-span-full text-center">Loading ...</p>
                 ) : (
                     categories
-                        .filter((category) => category.parentCategoryID === null)
+                        // .filter((category) => category.parentCategoryID === null)
+                        .slice(0, 4)
                         .map((category, index) => (
                             <CategoryCard
                                 key={index}

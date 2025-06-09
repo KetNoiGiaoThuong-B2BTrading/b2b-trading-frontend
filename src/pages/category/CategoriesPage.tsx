@@ -92,8 +92,8 @@ const CategoriesPage = () => {
         fetchCategories();
     }, []);
 
-    const handleCategoryClick = (categoryTitle: string) => {
-        navigate(`/products?category=${encodeURIComponent(categoryTitle)}`);
+    const handleCategoryClick = (categoryID: number) => {
+        navigate(`/products?categoryID=${categoryID}`);
     };
 
     return (
@@ -126,13 +126,13 @@ const CategoriesPage = () => {
                                 <button
                                     key={index}
                                     className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
-                                    onClick={() => handleCategoryClick(category.categoryName)} // thêm xử lý click
+                                    onClick={() => handleCategoryClick(category.categoryID)} // thêm xử lý click
                                 >
-                                    <div className="aspect-w-16 aspect-h-10">
+                                    <div className="aspect-w-16 aspect-h-10 overflow-hidden">
                                         <img
                                             src={category.categoryImage}
                                             alt={category.categoryName}
-                                            className="w-full h-48 object-cover"
+                                            className="w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
                                         />
                                     </div>
                                     <div className="p-6">

@@ -4,19 +4,6 @@ import { Building2, MapPin, Phone, Mail, Globe, Star, Award, FileText, Users, Ca
 import api from '../../lib/axios';
 import { API_ENDPOINTS } from '../../lib/apiConfig';
 
-interface Address {
-  street: string;
-  district: string;
-  city: string;
-  country: string;
-}
-
-interface Contact {
-  phone: string;
-  email: string;
-  website: string;
-}
-
 interface Product {
   id: number;
   name: string;
@@ -43,43 +30,43 @@ interface Document {
   status: 'valid' | 'expiring' | 'expired';
 }
 
-interface BusinessData {
-  id: number;
-  name: string;
-  logo: string;
-  industry: string;
+interface Company {
+  companyID: number;
+  companyName: string;
+  taxCode: string;
+  businessSector: string;
+  address: string;
+  representative: string;
+  email: string;
+  phoneNumber: string;
+  verificationStatus: string;
+  imageCompany: string;
+
   description: string;
   establishedYear: number;
   employeeCount: string;
-  address: Address;
-  contact: Contact;
+  website: string;
   rating: number;
   totalReviews: number;
-  verificationStatus: string;
   products: Product[];
   reviews: Review[];
   documents: Document[];
 }
 
-const fallbackData: BusinessData = {
-  id: 1,
-  name: "Công ty TNHH Công nghệ ABC",
-  logo: "https://placehold.co/120x120/2563eb/ffffff?text=ABC",
-  industry: "Công nghệ thông tin",
+const fallbackData: Company = {
+  companyID: 1,
+  companyName: "Công ty TNHH Công nghệ ABC",
+  imageCompany: "https://placehold.co/120x120/2563eb/ffffff?text=ABC",
+  taxCode: "123456",
+  representative: "Nguyễn Văn A",
+  businessSector: "Công nghệ thông tin",
   description: "Chuyên cung cấp giải pháp phần mềm và dịch vụ CNTT cho doanh nghiệp",
   establishedYear: 2015,
   employeeCount: "50-100",
-  address: {
-    street: "123 Đường Nguyễn Văn Cừ",
-    district: "Quận 5",
-    city: "TP. Hồ Chí Minh",
-    country: "Việt Nam"
-  },
-  contact: {
-    phone: "+84 28 1234 5678",
-    email: "contact@abc-tech.vn",
-    website: "https://abc-tech.vn"
-  },
+  address: "123 Đường Nguyễn Văn Cừ, Quận 5, TP. Hồ Chí Minh, Việt Nam",
+  phoneNumber: "+84 28 1234 5678",
+  email: "contact@abc-tech.vn",
+  website: "https://abc-tech.vn",
   rating: 4.7,
   totalReviews: 128,
   verificationStatus: "verified",
@@ -164,7 +151,7 @@ const CompanyProfile = () => {
   const { id } = useParams();
   const companyId = parseInt(id || '1', 10);
 
-  const [businessData, setBusinessData] = useState<BusinessData | null>(null);
+  const [Company, setCompany] = useState<Company | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
@@ -174,7 +161,7 @@ const CompanyProfile = () => {
   }, []);  
 
   useEffect(() => {
-    const fetchBusinessData = async () => {
+    const fetchCompany = async () => {
       setLoading(true);
       setError(null);
 
@@ -182,26 +169,24 @@ const CompanyProfile = () => {
         const res = await api.get(API_ENDPOINTS.getCompanyProfileById(companyId));
         let businessInfo = res.data?.data || res.data || fallbackData;
 
-        const mergedData: BusinessData = {
+        const mergedData: Company = {
           ...fallbackData,
           ...businessInfo,
-          address: { ...fallbackData.address, ...(businessInfo.address || {}) },
-          contact: { ...fallbackData.contact, ...(businessInfo.contact || {}) },
           products: businessInfo.products || fallbackData.products,
           reviews: businessInfo.reviews || fallbackData.reviews,
           documents: businessInfo.documents || fallbackData.documents
         };
 
-        setBusinessData(mergedData);
+        setCompany(mergedData);
       } catch (err) {
         setError('Không thể tải dữ liệu công ty. Sử dụng dữ liệu mẫu.');
-        setBusinessData(fallbackData);
+        setCompany(fallbackData);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchBusinessData();
+    fetchCompany();
   }, [companyId]);
 
   const handleRetry = () => {
@@ -230,7 +215,7 @@ const CompanyProfile = () => {
     );
   }
 
-  if (!businessData) {
+  if (!Company) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -250,7 +235,7 @@ const CompanyProfile = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white shadow-sm border-b border-gray-300">
         {/* Error Banner */}
         {error && (
           <div className="bg-yellow-50 border-b border-yellow-200">
@@ -278,48 +263,48 @@ const CompanyProfile = () => {
             <div className="flex items-start gap-6">
               <div className="flex-shrink-0">
                 <img
-                  src={businessData.logo}
-                  alt={`${businessData.name} logo`}
+                  src={Company.imageCompany}
+                  alt={`${Company.companyName} logo`}
                   className="w-20 h-20 rounded-lg object-cover border border-gray-200"
                 />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 mb-2">
                   <h1 className="text-2xl font-bold text-gray-900 truncate">
-                    {businessData.name}
+                    {Company.companyName}
                   </h1>
-                  {businessData.verificationStatus === 'verified' && (
+                  {Company.verificationStatus === 'verified' && (
                     <div className="flex items-center gap-1 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
                       <CheckCircle className="w-3 h-3" />
                       <span>Đã xác thực</span>
                     </div>
                   )}
                 </div>
-                <p className="text-gray-600 mb-3">{businessData.description}</p>
+                <p className="text-gray-600 mb-3">{Company.description}</p>
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                   <span className="flex items-center gap-1">
                     <Building2 className="w-4 h-4" />
-                    {businessData.industry}
+                    {Company.businessSector}
                   </span>
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    Thành lập {businessData.establishedYear}
+                    Thành lập {Company.establishedYear}
                   </span>
                   <span className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
-                    {businessData.employeeCount} nhân viên
+                    {Company.employeeCount} nhân viên
                   </span>
                 </div>
               </div>
             </div>
             <div className="flex flex-col items-end gap-2">
               <div className="flex items-center gap-1">
-                {renderStars(businessData.rating)}
+                {renderStars(Company.rating)}
                 <span className="ml-2 text-sm font-medium text-gray-900">
-                  {businessData.rating}
+                  {Company.rating}
                 </span>
                 <span className="text-sm text-gray-500">
-                  ({businessData.totalReviews} đánh giá)
+                  ({Company.totalReviews} đánh giá)
                 </span>
               </div>
             </div>
@@ -328,7 +313,7 @@ const CompanyProfile = () => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-white border-b">
+      <div className="bg-white border-b border-gray-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex space-x-8">
             {[
@@ -369,28 +354,26 @@ const CompanyProfile = () => {
                   <div className="flex items-start gap-3">
                     <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
                     <div>
-                      <p className="text-gray-900">{businessData.address.street}</p>
-                      <p className="text-gray-600">{businessData.address.district}, {businessData.address.city}</p>
-                      <p className="text-gray-600">{businessData.address.country}</p>
+                      <p className="text-gray-900">{Company.address}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <Phone className="w-5 h-5 text-gray-400" />
-                    <span className="text-gray-900">{businessData.contact.phone}</span>
+                    <span className="text-gray-900">{Company.phoneNumber}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Mail className="w-5 h-5 text-gray-400" />
-                    <span className="text-gray-900">{businessData.contact.email}</span>
+                    <span className="text-gray-900">{Company.email}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Globe className="w-5 h-5 text-gray-400" />
                     <a 
-                      href={businessData.contact.website} 
+                      href={Company.website} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
                     >
-                      {businessData.contact.website}
+                      {Company.website}
                       <ExternalLink className="w-4 h-4" />
                     </a>
                   </div>
@@ -407,20 +390,20 @@ const CompanyProfile = () => {
                     <span className="text-gray-600">Đánh giá trung bình</span>
                     <div className="flex items-center gap-1">
                       <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                      <span className="font-semibold">{businessData.rating}</span>
+                      <span className="font-semibold">{Company.rating}</span>
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Tổng đánh giá</span>
-                    <span className="font-semibold">{businessData.totalReviews}</span>
+                    <span className="font-semibold">{Company.totalReviews}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Sản phẩm/Dịch vụ</span>
-                    <span className="font-semibold">{businessData.products.length}</span>
+                    <span className="font-semibold">{Company.products.length}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Năm hoạt động</span>
-                    <span className="font-semibold">{new Date().getFullYear() - businessData.establishedYear}</span>
+                    <span className="font-semibold">{new Date().getFullYear() - Company.establishedYear}</span>
                   </div>
                 </div>
               </div>
@@ -430,7 +413,7 @@ const CompanyProfile = () => {
 
         {activeTab === 'products' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {businessData.products.map(product => (
+            {Company.products.map(product => (
               <div key={product.id} className="bg-white rounded-lg shadow overflow-hidden">
                 <img
                   src={product.image}
@@ -453,7 +436,7 @@ const CompanyProfile = () => {
 
         {activeTab === 'reviews' && (
           <div className="space-y-6">
-            {businessData.reviews.map(review => (
+            {Company.reviews.map(review => (
               <div key={review.id} className="bg-white rounded-lg shadow p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
@@ -477,7 +460,7 @@ const CompanyProfile = () => {
 
         {activeTab === 'documents' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {businessData.documents.map(doc => (
+            {Company.documents.map(doc => (
               <div key={doc.id} className="bg-white rounded-lg shadow p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
