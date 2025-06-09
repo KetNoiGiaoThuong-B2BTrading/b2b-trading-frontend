@@ -1,8 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { useCart } from '../../context/CardContext';
+import api from '../../lib/axios';
+import { API_ENDPOINTS } from '../../lib/apiConfig';
+
+interface CompanyData {
+    companyID: number;
+    companyName: string;
+    taxCode: string;
+    businessSector: string;
+    address: string;
+    representative: string;
+    email: string;
+    phoneNumber: string;
+    verificationStatus: string;
+    imageCompany: string;
+  }
+  
 interface Product {
     productID: number;
     image: string;
@@ -12,6 +28,7 @@ interface Product {
     stockQuantity: number;
     status: string;
     createdDate: string;
+    companyID: number;
 }
 interface CartItem {
     productID: number;
@@ -38,6 +55,25 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
 
     const isAlreadyInCart = cart.some((item: CartItem) => item.productID === product.productID);
+
+    const [companyName, setCompanyName] = useState<string>('Đang tải...');
+
+    useEffect(() => {
+    const fetchCompanyName = async () => {
+        try {
+        const res = await api.get(API_ENDPOINTS.getCompanyProfileById(product.companyID));
+        const data: CompanyData = res.data;
+        setCompanyName(data.companyName);
+        } catch (err) {
+        console.error('Không thể lấy tên công ty:', err);
+        setCompanyName('Không xác định');
+        }
+    };
+
+    if (product.companyID) {
+        fetchCompanyName();
+    }
+    }, [product.companyID]);
 
     const handleUpdateCart = () => {
         if (product.status === 'Out of stock') return;
@@ -66,7 +102,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
     return (
         <article className="w-full text-base leading-7 group hover:shadow-md transition-shadow duration-300">
-            <button
+            <div
                 className="pb-4 bg-white rounded-xl border border-solid border-[#F6F8FB] overflow-hidden"
                 onClick={handleCardClick}
             >
@@ -92,15 +128,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 </div>
 
                 {/* Content section */}
-                <div className="flex flex-col justify-between px-4 pt-3 flex-1 text-[15px]">
+                <div className="flex flex-col justify-between px-4 flex-1 text-[15px]">
                     <div>
-                        <h3 className="text-lg font-semibold text-neutral-950 w-full line-clamp-2 min-h-[56px]">
+                    <span className="text-sm text-gray-600">{companyName}</span>
+                        <h3 className="text-lg font-semibold text-neutral-950 w-full line-clamp-2">
                             {product.productName}
                         </h3>
-
+                        
                         <div className="mt-3 text-sm">
-                            <span className="text-sm text-blue-600">your price:</span>{' '}
-                            <span className="font-bold text-xl text-blue-600">{product.unitPrice}đ</span>{' '}
+                            <span className="text-red-600">Giá:</span>{' '}
+                            <span className="font-bold text-xl text-red-600">
+                                {product.unitPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
+                            </span>
                         </div>
                     </div>
 
@@ -111,9 +150,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                                 type="number"
                                 defaultValue={1}
                                 min={1}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                }} 
                                 className="w-30 px-3 py-2 text-center border border-gray-300 rounded text-sm"
                             />
-                            <select className="px-3 py-2 border border-gray-300 rounded text-sm w-full">
+                            <select
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                }} 
+                                className="px-3 py-2 border border-gray-300 rounded text-sm w-full"
+                            >
                                 <option value="item">Item</option>
                             </select>
                         </div>
@@ -143,7 +190,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                         </div>
                     </div>
                 </div>
-            </button>
+            </div>
 
             {showAddedMessage && (
                 <div className="flex gap-2 justify-center px-6 py-2 text-blue-600 bg-sky-100 rounded">

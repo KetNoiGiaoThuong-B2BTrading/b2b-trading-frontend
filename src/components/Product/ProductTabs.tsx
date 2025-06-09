@@ -27,57 +27,65 @@ interface QA {
 }
 
 interface Product {
-    id: number;
-    name: string;
-    brand: string;
-    partNo: string;
-    rating: number;
-    ratingCount: number;
-    inStock: boolean;
-    discountTiers: {
-        quantity: string;
-        discount: string;
-        price: string;
-    }[];
-    yourPrice: string;
-    originalPrice: string;
-    variants: string[];
-    unit: string;
-    quantity: number;
-    images: string[];
-    companyId: number;
-    description?: string;
-    technicalDetails?: Record<string, string>;
-    attachments?: string[];
-    reviews?: Review[];
-    shipping?: ShippingInfo;
-    payments?: PaymentInfo;
-    questions?: QA[];
+    productID: number;
+    image: string;
+    productName: string;
+    description: string;
+    unitPrice: number;
+    stockQuantity: number;
+    status: string;
+    createdDate: string;
+    categoryID: number;
+    companyID: number;
+
+    // brand: string;
+    // partNo: string;
+    // rating: number;
+    // ratingCount: number;
+    // inStock: boolean;
+    // discountTiers: {
+    //     quantity: string;
+    //     discount: string;
+    //     price: string;
+    // }[];
+    // yourPrice: string;
+    // originalPrice: string;
+    // variants: string[];
+    // unit: string;
+    // quantity: number;
+    // images: string[];
+    // companyId: number;
+    // technicalDetails?: Record<string, string>;
+    // attachments?: string[];
+    // reviews?: Review[];
+    // shipping?: ShippingInfo;
+    // payments?: PaymentInfo;
+    // questions?: QA[];
 }
 
 export default function ProductTabs({ product }: { product: Product }) {
     const [activeTab, setActiveTab] = React.useState("description");
-    const [productReviewList, setProductReviewList] = useState<Review[]>(product.reviews ?? []);
+    // const [productReviewList, setProductReviewList] = useState<Review[]>(product.reviews ?? []);
     const [reviewRating, setReviewRating] = useState<number>(0);
     const [reviewName, setReviewName] = useState<string>("");
     const [reviewComment, setReviewComment] = useState<string>("");
-    const [updatedRating, setUpdatedRating] = useState<number>(product.rating);
-    const [updatedRatingCount, setUpdatedRatingCount] = useState<number>(product.ratingCount);
-    const [questionList, setQuestionList] = useState<QA[]>(product.questions ?? []);
+    // const [updatedRating, setUpdatedRating] = useState<number>(product.rating);
+    // const [updatedRatingCount, setUpdatedRatingCount] = useState<number>(product.ratingCount);
+    // const [questionList, setQuestionList] = useState<QA[]>(product.questions ?? []);
     const [qaName, setQaName] = useState("");
     const [qaEmail, setQaEmail] = useState("");
     const [qaQuestion, setQaQuestion] = useState("");
 
     const tabs = [
-        { id: "description", label: "Description" },
-        { id: "technical", label: "Technical Details" },
-        { id: "attachments", label: "Attachments" },
-        { id: "shipping", label: "Shipping & Payments" },
+        { id: "description", label: "Mô tả" },
+        { id: "technical", label: "Thông số kỹ thuật" },
+        { id: "attachments", label: "Tài liệu liên quan" },
+        { id: "shipping", label: "Phương thức Vận chuyển & Thanh toán" },
         {
-        id: "reviews",
-        label: `Reviews (${product.reviews?.length ?? 0})`,
+        id: "reviews", label: `Đánh giá`, 
+        // (${product.reviews?.length ?? 0})`,
         },
-        { id: "ask", label: "Ask about product" },
+        { id: "ask", label: "Hỏi đáp" },
     ];
 
     return (
@@ -87,9 +95,9 @@ export default function ProductTabs({ product }: { product: Product }) {
             <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`self-stretch px-4 py-3 my-auto rounded-lg ${
+                className={`self-stretch px-3 py-2 my-auto rounded-lg ${
                 activeTab === tab.id
-                    ? "font-bold text-white bg-blue-600"
+                    ? "font-medium text-white bg-blue-600"
                     : "bg-slate-50 text-neutral-950"
                 }`}
             >
@@ -98,18 +106,18 @@ export default function ProductTabs({ product }: { product: Product }) {
             ))}
         </div>
 
-        <div className="flex flex-col justify-center p-6 w-full bg-sky-100 rounded-none">
+        <div className="flex flex-col justify-center p-4 w-full bg-sky-100 rounded-lg">
             {activeTab === "description" && (
             <div className="bg-white p-6 rounded-lg">
-                <h3 className="font-bold text-lg mb-2">Description</h3>
+                {/* <h3 className="font-bold text-lg mb-2">Description</h3> */}
                 <p>{product.description ?? "No description available."}</p>
             </div>
             )}
 
             {activeTab === "technical" && (
             <div className="bg-white p-6 rounded-lg">
-                <h3 className="font-bold text-lg mb-2">Technical Details</h3>
-                {product.technicalDetails ? (
+                {/* <h3 className="font-bold text-lg mb-2">Technical Details</h3> */}
+                {/* {product.technicalDetails ? (
                 <ul className="list-disc list-inside">
                     {Object.entries(product.technicalDetails).map(
                     ([key, value]) => (
@@ -121,14 +129,14 @@ export default function ProductTabs({ product }: { product: Product }) {
                 </ul>
                 ) : (
                 <p>No technical details available.</p>
-                )}
+                )} */}
             </div>
             )}
 
             {activeTab === "attachments" && (
             <div className="bg-white p-6 rounded-lg">
-                <h3 className="font-bold text-lg mb-2">Attachments</h3>
-                {product.attachments && product.attachments.length > 0 ? (
+                {/* <h3 className="font-bold text-lg mb-2">Attachments</h3> */}
+                {/* {product.attachments && product.attachments.length > 0 ? (
                 <ul className="list-disc list-inside">
                     {product.attachments.map((file, idx) => (
                     <li key={idx}>
@@ -145,7 +153,7 @@ export default function ProductTabs({ product }: { product: Product }) {
                 </ul>
                 ) : (
                 <p>No attachments available.</p>
-                )}
+                )} */}
             </div>
             )}
 
@@ -153,17 +161,17 @@ export default function ProductTabs({ product }: { product: Product }) {
             <div className="bg-white p-6 rounded-lg space-y-10">
                 {/* Shipping Info */}
                 <div>
-                <h3 className="text-xl font-bold text-blue-600">Shipping</h3>
+                {/* <h3 className="text-xl font-bold text-blue-600">Shipping</h3> */}
                 <p className="mt-2 text-neutral-700">
-                    {product.shipping?.description ?? "Thông tin giao hàng chưa được cập nhật."}
+                    {/* {product.shipping?.description ?? "Thông tin giao hàng chưa được cập nhật."} */}
                 </p>
                 <ul className="mt-4 space-y-2">
-                    {product.shipping?.types.map((type, idx) => (
+                    {/* {product.shipping?.types.map((type, idx) => (
                     <li key={idx} className="flex justify-between border-b py-2">
                         <span>{type.type}</span>
                         <span className="text-blue-600 font-semibold">{type.cost}</span>
                     </li>
-                    )) ?? <li>Chưa có phương thức giao hàng.</li>}
+                    )) ?? <li>Chưa có phương thức giao hàng.</li>} */}
                 </ul>
                 </div>
 
@@ -171,28 +179,28 @@ export default function ProductTabs({ product }: { product: Product }) {
                 <div>
                 <h3 className="text-xl font-bold text-blue-600">Payment</h3>
                 <p className="mt-2 text-neutral-700">
-                    {product.payments?.description ?? "Thông tin thanh toán chưa được cập nhật."}
+                    {/* {product.payments?.description ?? "Thông tin thanh toán chưa được cập nhật."} */}
                 </p>
                 <ul className="mt-4 space-y-2">
-                    {product.payments?.methods.map((method, idx) => (
+                    {/* {product.payments?.methods.map((method, idx) => (
                     <li key={idx} className="flex justify-between border-b py-2">
                         <span>{method.type}</span>
                         <span className="text-blue-600">{method.info}</span>
                     </li>
-                    )) ?? <li>Chưa có phương thức thanh toán.</li>}
+                    )) ?? <li>Chưa có phương thức thanh toán.</li>} */}
                 </ul>
                 </div>
             </div>
             )}
 
             {activeTab === "reviews" && (
-            <div className="flex flex-wrap items-start gap-10 p-6 bg-sky-100">
+            <div className="flex flex-wrap items-start gap-10 p-6 bg-white">
                 <div className="flex-1 min-w-[300px]">
-                <h3 className="text-2xl font-bold text-neutral-950">
+                {/* <h3 className="text-2xl font-bold text-neutral-950">
                     Customer Reviews ({product.reviews?.length ?? 0})
-                </h3>
+                </h3> */}
 
-                {product.reviews && product.reviews.length > 0 ? (
+                {/* {product.reviews && product.reviews.length > 0 ? (
                     <div className="mt-4 space-y-4">
                     {productReviewList.map((review, idx) => (
                         <div key={idx} className="bg-white p-4 rounded shadow-sm">
@@ -232,12 +240,12 @@ export default function ProductTabs({ product }: { product: Product }) {
                         alt="No reviews"
                     />
                     </div>
-                )}
+                )} */}
                 </div>
 
                 {/* Form đánh giá */}
                 <div className="flex-1 min-w-[300px]">
-                <h3 className="text-2xl font-bold text-neutral-950 mb-4">Rate this product</h3>
+                <h3 className="text-xl font-medium text-neutral-950 mb-4">Bạn hài lòng về sản phẩm này?</h3>
 
                 <form
                     onSubmit={(e) => {
@@ -255,13 +263,13 @@ export default function ProductTabs({ product }: { product: Product }) {
                     };
                     
                     api
-                        .post(API_ENDPOINTS.updateProductReview(product.id), newReview)
+                        .post(API_ENDPOINTS.updateProductReview(product.productID), newReview)
                         .then((res) => {
-                        const { review, rating, ratingCount } = res.data;
+                        // const { review, rating, ratingCount } = res.data;
                     
-                        setProductReviewList((prev) => [...prev, review]);
-                        setUpdatedRating(rating);
-                        setUpdatedRatingCount(ratingCount);
+                        // setProductReviewList((prev) => [...prev, review]);
+                        // setUpdatedRating(rating);
+                        // setUpdatedRatingCount(ratingCount);
                     
                         // reset form
                         setReviewName("");
@@ -310,40 +318,44 @@ export default function ProductTabs({ product }: { product: Product }) {
                     </div>
 
                     <div>
-                    <label className="block font-medium">Name</label>
-                    <input
-                        type="text"
-                        value={reviewName}
-                        onChange={(e) => setReviewName(e.target.value)}
-                        className="w-full mt-1 p-2 border border-gray-300 rounded"
-                    />
+                        {/* <label className="block text-md">Tên hiển thị</label> */}
+                        <input
+                            type="text"
+                            value={reviewName}
+                            onChange={(e) => setReviewName(e.target.value)}
+                            className="w-full mt-1 p-2 border border-gray-300 rounded"
+                            placeholder="Tên hiển thị"
+                        />
                     </div>
 
                     <div>
-                    <label className="block font-medium">Your Review</label>
-                    <textarea
-                        value={reviewComment}
-                        onChange={(e) => setReviewComment(e.target.value)}
-                        className="w-full mt-1 p-2 border border-gray-300 rounded min-h-[100px]"
-                    />
+                        {/* <label className="block text-md">Đánh giá của bạn</label> */}
+                        <textarea
+                            value={reviewComment}
+                            onChange={(e) => setReviewComment(e.target.value)}
+                            className="w-full mt-1 p-2 border border-gray-300 rounded min-h-[100px]"
+                            placeholder="Đánh giá của bạn"
+                        />
                     </div>
 
-                    <button
-                    type="submit"
-                    className="w-full bg-blue-600 text-white py-2 rounded"
-                    >
-                    Submit Review
-                    </button>
+                    <div className="flex justify-end">
+                        <button
+                            type="submit"
+                            className="w-1/4 bg-blue-600 text-white py-2 rounded"
+                        >
+                            Gửi
+                        </button>
+                    </div>
                 </form>
                 </div>
             </div>
             )}
 
             {activeTab === 'ask' && (
-            <div className="flex flex-wrap gap-10 p-6 bg-sky-100">
+            <div className="flex flex-wrap gap-10 p-6 bg-white">
                 {/* Form hỏi bên trái */}
                 <div className="flex-1 min-w-[300px]">
-                <h3 className="text-2xl font-bold text-neutral-950 mb-4">Ask a question</h3>
+                <h3 className="text-xl font-medium text-neutral-950 mb-4">Bạn có câu hỏi?</h3>
 
                 <form
                     onSubmit={(e) => {
@@ -360,9 +372,9 @@ export default function ProductTabs({ product }: { product: Product }) {
                         answer: undefined,
                     };
 
-                    api.post(API_ENDPOINTS.updateProductQuestion(product.id), newQA)
+                    api.post(API_ENDPOINTS.updateProductQuestion(product.productID), newQA)
 
-                    setQuestionList((prev) => [...prev, newQA]);
+                    // setQuestionList((prev) => [...prev, newQA]);
 
                     setQaName("");
                     setQaEmail("");
@@ -371,47 +383,52 @@ export default function ProductTabs({ product }: { product: Product }) {
                     className="space-y-4"
                 >
                     <div>
-                    <label className="block font-medium">Name</label>
+                    {/* <label className="block font-medium">Name</label> */}
                     <input
                         type="text"
                         value={qaName}
                         onChange={(e) => setQaName(e.target.value)}
                         className="w-full mt-1 p-2 border border-gray-300 rounded"
+                        placeholder="Tên hiển thị"
                     />
                     </div>
 
                     <div>
-                    <label className="block font-medium">E-mail</label>
+                    {/* <label className="block font-medium">E-mail</label> */}
                     <input
                         type="email"
                         value={qaEmail}
                         onChange={(e) => setQaEmail(e.target.value)}
                         className="w-full mt-1 p-2 border border-gray-300 rounded"
+                        placeholder="Email"
                     />
                     </div>
 
                     <div>
-                    <label className="block font-medium">Your question</label>
+                    {/* <label className="block font-medium">Your question</label> */}
                     <textarea
                         value={qaQuestion}
                         onChange={(e) => setQaQuestion(e.target.value)}
                         className="w-full mt-1 p-2 border border-gray-300 rounded min-h-[100px]"
+                        placeholder="Câu hỏi của bạn"
                     />
                     </div>
 
-                    <button
-                    type="submit"
-                    className="w-full bg-blue-600 text-white py-2 rounded"
-                    >
-                    Send question
-                    </button>
+                    <div className="flex justify-end">
+                        <button
+                            type="submit"
+                            className="w-1/4 bg-blue-600 text-white py-2 rounded"
+                        >
+                            Gửi
+                        </button>
+                    </div>
                 </form>
                 </div>
 
                 {/* Danh sách câu hỏi bên phải */}
                 <div className="flex-1 min-w-[300px]">
-                <h3 className="text-2xl font-bold text-neutral-950 mb-4">Previous Questions</h3>
-                {questionList.length === 0 ? (
+                {/* <h3 className="text-2xl font-bold text-neutral-950 mb-4">Previous Questions</h3> */}
+                {/* {questionList.length === 0 ? (
                     <p className="text-gray-600">Chưa có câu hỏi nào.</p>
                 ) : (
                     <div className="space-y-4">
@@ -428,7 +445,7 @@ export default function ProductTabs({ product }: { product: Product }) {
                         </div>
                     ))}
                     </div>
-                )}
+                )} */}
                 </div>
             </div>
             )}

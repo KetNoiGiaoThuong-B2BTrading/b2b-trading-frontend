@@ -15,6 +15,7 @@ interface Product {
     stockQuantity: number;
     status: string;
     createdDate: string;
+    companyID: number;
 }
 
 const fallbackProducts: Product[] = [
@@ -27,6 +28,7 @@ const fallbackProducts: Product[] = [
         stockQuantity: 100,
         status: 'Available',
         createdDate: '2021-01-01',
+        companyID: 1,
     },
     {
         productID: 2,
@@ -37,6 +39,7 @@ const fallbackProducts: Product[] = [
         stockQuantity: 100,
         status: 'Available',
         createdDate: '2021-01-01',
+        companyID: 2,
     },
     {
         productID: 3,
@@ -47,6 +50,7 @@ const fallbackProducts: Product[] = [
         stockQuantity: 100,
         status: 'Available',
         createdDate: '2021-01-01',
+        companyID: 3,
     },
     {
         productID: 4,
@@ -57,6 +61,7 @@ const fallbackProducts: Product[] = [
         stockQuantity: 100,
         status: 'Available',
         createdDate: '2021-01-01',
+        companyID: 1,
     },
     {
         productID: 5,
@@ -67,6 +72,7 @@ const fallbackProducts: Product[] = [
         stockQuantity: 100,
         status: 'Available',
         createdDate: '2021-01-01',
+        companyID: 2,
     },
 ];
 const RecommendedProducts: React.FC = () => {
@@ -108,9 +114,9 @@ const RecommendedProducts: React.FC = () => {
 
             <div className="w-full">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {products.map((product, index) => (
-                        <ProductCard key={index} product={product} />
-                    ))}
+                {Array.isArray(products) && products.map((product, index) => (
+                    <ProductCard key={index} product={product} />
+                ))}
                 </div>
             </div>
         </section>

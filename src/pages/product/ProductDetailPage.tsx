@@ -40,28 +40,35 @@ interface QA {
 }
 
 interface Product {
-    id: number;
-    name: string;
-    brand: string;
-    partNo: string;
-    rating: number;
-    ratingCount: number;
-    inStock: boolean;
-    discountTiers: DiscountTier[];
-    yourPrice: string;
-    originalPrice: string;
-    variants: string[];
-    unit: string;
-    quantity: number;
-    images: string[];
-    companyId: number;
-    description?: string;
-    technicalDetails?: Record<string, string>;
-    attachments?: string[];
-    reviews?: Review[];
-    shipping?: ShippingInfo;
-    payments?: PaymentInfo;
-    questions?: QA[];
+    productID: number;
+    image: string;
+    productName: string;
+    description: string;
+    unitPrice: number;
+    stockQuantity: number;
+    status: string;
+    createdDate: string;
+    categoryID: number;
+    companyID: number;
+
+    // brand: string;
+    // partNo: string;
+    // rating: number;
+    // ratingCount: number;
+    // inStock: boolean;
+    // discountTiers: DiscountTier[];
+    // yourPrice: string;
+    // originalPrice: string;
+    // variants: string[];
+    // unit: string;
+    // images: string[];
+
+    // technicalDetails?: Record<string, string>;
+    // attachments?: string[];
+    // reviews?: Review[];
+    // shipping?: ShippingInfo;
+    // payments?: PaymentInfo;
+    // questions?: QA[];
 }
 
 const fallbackProduct = {
@@ -87,7 +94,7 @@ const fallbackProduct = {
         "https://cdn.builder.io/api/v1/image/assets/182fee6bb5c14645ac126407c1ee5eb2/784a74b95eb04a2096f1ec0ab5f6fdf1e42a7aa6?placeholderIfAbsent=true",
         "https://cdn.builder.io/api/v1/image/assets/182fee6bb5c14645ac126407c1ee5eb2/784a74b95eb04a2096f1ec0ab5f6fdf1e42a7aa6?placeholderIfAbsent=true",
     ],
-    companyId: 1,
+    companyID: 1,
     description: "Đây là mô tả mẫu cho sản phẩm.",
     technicalDetails: {
         "Chất liệu": "Nhôm cao cấp",
@@ -142,7 +149,7 @@ const ProductDetailPage = () => {
     useEffect(() => {
         if (!productId) {
             console.warn("Không tìm thấy productId trong URL.");
-            setProduct(fallbackProduct);
+            //setProduct(fallbackProduct);
             setLoading(false);
             return;
         }
@@ -150,7 +157,7 @@ const ProductDetailPage = () => {
         const numericProductId = parseInt(productId ?? '', 10);
         if (isNaN(numericProductId)) {
             console.warn("productId không hợp lệ.");
-            setProduct(fallbackProduct);
+            //setProduct(fallbackProduct);
             setLoading(false);
             return;
         }
@@ -164,11 +171,11 @@ const ProductDetailPage = () => {
                 setProduct(fetchedProduct);
             } else {
                 console.warn("API trả về dữ liệu không hợp lệ. Dùng fallback.");
-                setProduct(fallbackProduct);
+                //setProduct(fallbackProduct);
             }
             } catch (error) {
             console.error("Lỗi khi lấy chi tiết sản phẩm:", error);
-            setProduct(fallbackProduct);
+            //setProduct(fallbackProduct);
             } finally {
             setLoading(false);
             }
@@ -177,16 +184,22 @@ const ProductDetailPage = () => {
         fetchProductDetail();
     }, [productId]);    
 
-    if (loading) return <div>Đang tải sản phẩm...</div>;
+    const LoadingOverlay = () => (
+        <div className="flex items-center justify-center h-screen bg-white">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      );
+      
+    if (loading) return <LoadingOverlay />;
     if (!product) return <div>Không tìm thấy sản phẩm.</div>;
 
     return (
     <main className="flex overflow-hidden flex-col items-center bg-white">
-        <section className="flex flex-col self-stretch px-20 mt-6 w-full max-md:px-5 max-md:max-w-full">
-            <div className="mt-11 w-full max-md:mt-10 max-md:max-w-full">
+        <section className="flex flex-col self-stretch px-24 mt-4 w-full max-md:px-5 max-md:max-w-full">
+            <div className="mt-11 w-full max-md:mt-4 max-md:max-w-full">
             <div className="flex gap-5 max-md:flex-col">
                 <div className="w-6/12 max-md:w-full">
-                    <ProductGallery images={product.images}/>
+                    <ProductGallery images={product.image}/>
                 </div>
                 <div className="w-6/12 max-md:w-full">
                     <ProductInfo product={product} />
@@ -195,14 +208,15 @@ const ProductDetailPage = () => {
             </div>
 
             <div className="flex gap-5 mt-20 max-md:flex-col">
-            {product.companyId && <CompanyCard companyId={product.companyId} />}
+                {/* {product.companyID && <CompanyCard companyID={product.companyID} />} */}
+                <CompanyCard companyID={product.companyID} />
             </div>
 
             <ProductTabs product={product} />
         </section>
 
         <NewsletterBanner />
-        <RelatedProducts title="Sản phẩm liên quan" />
+        <RelatedProducts title="Sản phẩm khác" />
     </main>
     );
 }
