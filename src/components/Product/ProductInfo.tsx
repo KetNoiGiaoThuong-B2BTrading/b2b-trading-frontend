@@ -101,7 +101,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
                 </div> */}
 
                 <div className="flex flex-col items-start mt-4 max-w-full w-[622px]">
-                    <div className="text-xl font-semibold text-red-500 leading-7">
+                    <div className="text-xl font-semibold text-red-600 leading-7">
                         <span className="text-md">Giá: </span>
                         <span className="text-2xl font-bold">
                             {product.unitPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
