@@ -93,13 +93,16 @@ export default function CombinedRegisterPage() {
                             className="w-full rounded border border-gray-300 px-3 py-2"
                         >
                             <option value="">Select Sector</option>
-                            <option value="software">Software Development</option>
-                            <option value="construction">Construction</option>
-                            <option value="manufacturing">Manufacturing</option>
-                            <option value="education">Education</option>
-                            <option value="finance">Finance</option>
-                            <option value="agriculture">Agriculture</option>
-                            <option value="logistics">Logistics</option>
+                            <option value="Công nghệ thông tin">Công nghệ thông tin</option>
+                            <option value="Xây dựng">Xây dựng</option>
+                            <option value="Sản xuất">Sản xuất</option>
+                            <option value="Giáo dục">Giáo dục</option>
+                            <option value="Tài chính">Tài chính</option>
+                            <option value="Nông nghiệp">Nông nghiệp</option>
+                            <option value="Logistics">Logistics</option>
+                            <option value="Thương mại dịch vụ">Thương mại dịch vụ</option>
+                            <option value="Sản xuất và phân phối">Sản xuất và phân phối</option>
+                            <option value="Khác">Khác</option>
                         </select>
                         <InputField
                             name="address"
