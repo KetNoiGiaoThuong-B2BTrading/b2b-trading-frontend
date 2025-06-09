@@ -6,7 +6,7 @@ import AdminLayout from '../layouts/AdminLayout';
 import HomePage from '../pages/home/HomePage';
 import AboutPage from '../pages/home/AboutPage';
 import LoginPage from '../pages/auth/LoginPage';
-import RegisterPage from '../pages/auth/RegisterPage';
+// import RegisterPage from '../pages/auth/RegisterPage';
 import NotFoundPage from '../pages/NotFoundPage';
 
 import DashboardPage from '../pages/admin/DashboardPage';
@@ -18,7 +18,7 @@ import ReportPage from '../pages/admin/ReportPage';
 import SettingPage from '../pages/admin/SettingPage';
 
 import AccountInfo from '../components/Profile/AccountInfo';
-import CompleteProfilePage from '../pages/company/CompleteProfilePage';
+// import CompleteProfilePage from '../pages/company/CompleteProfilePage';
 import CompanyInfo from '../components/Profile/CompanyInfo';
 import CompaniesPage from '../pages/company/CompaniesPage';
 import CompanyProfilePage from '../pages/company/CompanyProfilePage';
@@ -26,6 +26,7 @@ import CategoriesPage from '../pages/category/CategoriesPage';
 import ProductsPage from '../pages/product/ProductsPage';
 import ProductDetailPage from '../pages/product/ProductDetailPage';
 import ProfilePage from '../pages/home/ProfilePage';
+import CombinedRegisterPage from '../pages/auth/CombinedRegisterPage';
 
 const router = createBrowserRouter([
     {
@@ -62,8 +63,8 @@ const router = createBrowserRouter([
                 path: 'auth',
                 children: [
                     { path: 'login', Component: LoginPage },
-                    { path: 'register', Component: RegisterPage },
-                    { path: 'complete-profile', Component: CompleteProfilePage },
+                    { path: 'register', Component: CombinedRegisterPage },
+                    // { path: 'complete-profile', Component: CompleteProfilePage },
                 ],
             },
             { path: '*', Component: NotFoundPage },
