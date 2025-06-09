@@ -21,12 +21,13 @@ export const API_ENDPOINTS = {
     deleteCompanyInfo: (company_id: number) => `${API_BASE_URL}/company/${company_id}`,
     getInfoByEmailPhone: `${API_BASE_URL}/company/get-by-email-phone`,
     completeProfile: `${API_BASE_URL}/company/create`,
-    getCompanyProfileById: (company_id: number) => `${API_BASE_URL}/companies/${company_id}`,
+    getCompanyProfileById: (company_id: number) => `${API_BASE_URL}/Company/${company_id}`,
     // Products
     getAllProducts: `${API_BASE_URL}/product/all`,
     getProductById: (product_id: number) => `${API_BASE_URL}/product/${product_id}`,
+    getProductsByCompanyId: (company_id: number) => `${API_BASE_URL}/product/${company_id}`,
     // Categories
-    getAllCategories: `${API_BASE_URL}/category/all`,
+    getAllCategories: `${API_BASE_URL}/Category/all`,
     // Events
     // getAllEvents: `${API_BASE_URL}/events`,
     // Articles
