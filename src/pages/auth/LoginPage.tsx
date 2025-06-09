@@ -26,12 +26,16 @@ export default function LoginPage() {
             const data = res.data;
             // console.log(JSON.stringify(data));
             Cookies.set('data', JSON.stringify(data), { expires: 7 });
+            if (data.role === 'Admin') {
+                navigate('/admin/dashboard');
+            } else {
+                navigate('/');
+            }
             showToast({
                 title: 'Success',
                 message: 'Login successfully',
                 type: 'success',
             });
-            navigate('/');
         } catch (error) {
             console.log(error);
             showToast({
