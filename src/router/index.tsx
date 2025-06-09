@@ -30,6 +30,7 @@ import ProductsPage from '../pages/product/ProductsPage';
 import ProductDetailPage from '../pages/product/ProductDetailPage';
 import ProfilePage from '../pages/home/ProfilePage';
 import CombinedRegisterPage from '../pages/auth/CombinedRegisterPage';
+import MerchandiseInfo from '../pages/product/MerchandiseInfo';
 
 const router = createBrowserRouter([
     {
@@ -60,6 +61,7 @@ const router = createBrowserRouter([
                 children: [
                     { path: 'account', Component: AccountInfo },
                     { path: 'company', Component: CompanyInfo },
+                    { path: 'merchandise', Component: MerchandiseInfo },
                 ],
             },
             {

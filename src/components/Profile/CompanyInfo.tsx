@@ -8,6 +8,8 @@ import Cookies from 'js-cookie';
 export default function CompanyInfo() {
     const { showToast } = useToast();
 
+    const [loading, setLoading] = useState(false);
+
     const businessSectors = [
         { label: 'Software Development', value: 'software' },
         { label: 'Construction', value: 'construction' },
@@ -43,6 +45,7 @@ export default function CompanyInfo() {
     };
 
     const handleUpdate = async () => {
+        setLoading(true);
         try {
             const res = await api.put(API_ENDPOINTS.updateCompanyInfo(user.companyID), form);
             showToast({
@@ -56,6 +59,8 @@ export default function CompanyInfo() {
                 message: 'Không thể cập nhật thông tin công ty.',
                 type: 'error',
             });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -68,7 +73,7 @@ export default function CompanyInfo() {
 
                 if (userData.companyID) {
                     const companyRes = await api.get(API_ENDPOINTS.getCompanyInfoById(userData.companyID));
-                    setForm(companyRes.data.data);
+                    setForm(companyRes.data);
                 }
             } catch (err) {
                 showToast({
@@ -87,7 +92,7 @@ export default function CompanyInfo() {
                 <h2 className="text-lg font-semibold">Company Information</h2>
                 <span
                     className={`text-sm font-medium px-3 py-1 mx-3 rounded-full ${
-                        form.verificationStatus === 'Verified'
+                        form.verificationStatus === 'Đã xác minh'
                             ? 'bg-green-100 text-green-700'
                             : 'bg-yellow-100 text-yellow-700'
                     }`}
@@ -105,7 +110,7 @@ export default function CompanyInfo() {
                     <select
                         id="businessSector"
                         name="businessSector"
-                        value={form.businessSector}
+                        value={form.businessSector || ''}
                         onChange={handleChange}
                         className="w-full rounded border border-gray-300 px-3 py-2"
                     >
@@ -141,7 +146,7 @@ export default function CompanyInfo() {
                     onClick={handleUpdate}
                     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:cursor-pointer"
                 >
-                    Save changes
+                    {loading ? 'Saving...' : 'Save changes'}
                 </button>
             </div>
         </div>

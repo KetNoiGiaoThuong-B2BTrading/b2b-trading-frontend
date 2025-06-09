@@ -8,12 +8,9 @@ export default function LeftSidebar() {
 
     const sidebarItems = [
         { title: 'Dashboard', path: '/profiles' },
-        { title: 'Order History', path: '/profiles/orders' },
-        { title: 'Most Frequently Bought', path: '/profiles/frequent-buys' },
-        { title: 'Returns and Complaints', path: '/profiles/returns' },
+        { title: 'Merchandise', path: '/profiles/merchandise' },
         { title: 'Account Data', path: '/profiles/account' },
         { title: 'Company Data', path: '/profiles/company' },
-        { title: 'Shipping Addresses', path: '/profiles/addresses' },
     ];
 
     return (

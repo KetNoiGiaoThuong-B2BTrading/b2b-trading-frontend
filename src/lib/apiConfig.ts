@@ -5,7 +5,6 @@ export const API_ENDPOINTS = {
     register: `${API_BASE_URL}/auth/register`,
     login: `${API_BASE_URL}/auth/login`,
     logout: `${API_BASE_URL}/auth/logout`,
-    me: `${API_BASE_URL}/auth/me`,
 
     // Dashboard
     getDashboardStats: `${API_BASE_URL}/admin/dashboard/stats`,
@@ -25,7 +24,10 @@ export const API_ENDPOINTS = {
     // Products
     getAllProducts: `${API_BASE_URL}/product/all`,
     getProductById: (product_id: number) => `${API_BASE_URL}/product/${product_id}`,
-    getProductsByCompanyId: (company_id: number) => `${API_BASE_URL}/product/${company_id}`,
+    getProductsByCompanyId: (company_id: number) => `${API_BASE_URL}/product/get-by-company-id/${company_id}`,
+    createProduct: `${API_BASE_URL}/product/create`,
+    updateProduct: (product_id: number) => `${API_BASE_URL}/product/update/${product_id}`,
+    deleteProduct: (product_id: number) => `${API_BASE_URL}/product/delete/${product_id}`,
     // Categories
     getAllCategories: `${API_BASE_URL}/Category/all`,
     // Events
