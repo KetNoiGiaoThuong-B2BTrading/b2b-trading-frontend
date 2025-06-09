@@ -54,8 +54,8 @@ export default function CategoryManagement() {
     const handleDelete = async (categoryId: number) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
             try {
-                await api.delete(`${API_ENDPOINTS.updateCategory}/${categoryId}`);
-                setCategories(categories.filter((category) => category.categoryID !== categoryId));
+                await api.delete(`${API_ENDPOINTS.deleteCategory}/${categoryId}`);
+                await fetchCategories();
             } catch (error) {
                 console.error('Error deleting category:', error);
                 setError('Không thể xóa danh mục');

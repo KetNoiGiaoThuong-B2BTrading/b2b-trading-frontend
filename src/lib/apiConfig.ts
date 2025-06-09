@@ -48,9 +48,10 @@ export const API_ENDPOINTS = {
     verifyCompany: (companyId: number) => `${API_BASE_URL}/Admin/Companies/${companyId}/verify`,
 
     // Category Management
-    getAllCategories: `${API_BASE_URL}/Admin/Categories`,
-    createCategory: `${API_BASE_URL}/Admin/Categories`,
-    updateCategory: (categoryId: number) => `${API_BASE_URL}/Admin/Categories/${categoryId}`,
+    getAllCategories: '/Admin/Categories',
+    createCategory: '/Admin/Categories',
+    updateCategory: '/Admin/Categories',
+    deleteCategory: '/Admin/Categories',
 
     // Contract Management
     getAllContracts: `${API_BASE_URL}/Admin/Contracts`,
