@@ -16,15 +16,16 @@ import ContractPage from '../pages/admin/ContractPage';
 import PaymentPage from '../pages/admin/PaymentPage';
 import ReportPage from '../pages/admin/ReportPage';
 import SettingPage from '../pages/admin/SettingPage';
-
+import CategoryPage from '../pages/admin/CategoryPage';
+import ContentPage from '../pages/admin/ContentPage';
+import StatisticsPage from '../pages/admin/StatisticsPage';
 import AccountInfo from '../components/Profile/AccountInfo';
+
 // import CompleteProfilePage from '../pages/company/CompleteProfilePage';
 import CompanyInfo from '../components/Profile/CompanyInfo';
 import CompaniesPage from '../pages/company/CompaniesPage';
 import CompanyProfilePage from '../pages/company/CompanyProfilePage';
-import CategoryPage from '../pages/admin/CategoryPage';
 import CategoriesPage from '../pages/category/CategoriesPage';
-import ContentPage from '../pages/admin/ContentPage';
 import ProductsPage from '../pages/product/ProductsPage';
 import ProductDetailPage from '../pages/product/ProductDetailPage';
 import ProfilePage from '../pages/home/ProfilePage';
@@ -82,6 +83,7 @@ const router = createBrowserRouter([
             { path: 'category', Component: CategoryPage },
             { path: 'contract', Component: ContractPage },
             { path: 'content', Component: ContentPage },
+            { path: 'statistic', Component: StatisticsPage },
             { path: 'payments', Component: PaymentPage },
             { path: 'reports', Component: ReportPage },
             { path: 'settings', Component: SettingPage },
