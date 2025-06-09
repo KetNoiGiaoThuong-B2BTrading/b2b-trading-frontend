@@ -66,7 +66,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
     return (
         <article className="w-full text-base leading-7 group hover:shadow-md transition-shadow duration-300">
-            <button
+            <div
                 className="pb-4 bg-white rounded-xl border border-solid border-[#F6F8FB] overflow-hidden"
                 onClick={handleCardClick}
             >
@@ -100,7 +100,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
                         <div className="mt-3 text-sm">
                             <span className="text-sm text-blue-600">your price:</span>{' '}
-                            <span className="font-bold text-xl text-blue-600">{product.unitPrice}đ</span>{' '}
+                            <span className="font-bold text-xl text-blue-600">
+                                {product.unitPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ
+                            </span>{' '}
                         </div>
                     </div>
 
@@ -111,9 +113,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                                 type="number"
                                 defaultValue={1}
                                 min={1}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                }} 
                                 className="w-30 px-3 py-2 text-center border border-gray-300 rounded text-sm"
                             />
-                            <select className="px-3 py-2 border border-gray-300 rounded text-sm w-full">
+                            <select
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                }} 
+                                className="px-3 py-2 border border-gray-300 rounded text-sm w-full"
+                            >
                                 <option value="item">Item</option>
                             </select>
                         </div>
@@ -143,7 +153,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                         </div>
                     </div>
                 </div>
-            </button>
+            </div>
 
             {showAddedMessage && (
                 <div className="flex gap-2 justify-center px-6 py-2 text-blue-600 bg-sky-100 rounded">
