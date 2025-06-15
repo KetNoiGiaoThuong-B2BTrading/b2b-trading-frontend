@@ -47,6 +47,7 @@ export const API_ENDPOINTS = {
 
     // Company Management
     getAllCompanies: `${API_BASE_URL}/Admin/Companies`,
+    getAllCompaniesForBusiness: `${API_BASE_URL}/Company/all`,
     verifyCompany: (companyId: number) => `${API_BASE_URL}/Admin/Companies/${companyId}/verify`,
 
     // Category Management

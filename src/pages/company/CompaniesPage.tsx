@@ -57,7 +57,7 @@ const CompaniesPage = () => {
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
-                const response = await api.get(API_ENDPOINTS.getAllCompanies);
+                const response = await api.get(API_ENDPOINTS.getAllCompaniesForBusiness);
                 const data = response?.data;
                 if (Array.isArray(data)) {
                     setCompanies(data);
@@ -85,10 +85,7 @@ const CompaniesPage = () => {
     const totalPages = Math.ceil(filteredCompanies.length / itemsPerPage);
 
     // Lấy danh sách công ty theo trang hiện tại
-    const currentCompanies = filteredCompanies.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage,
-    );
+    const currentCompanies = filteredCompanies.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     // Lấy danh sách lĩnh vực duy nhất
     const uniqueSectors = Array.from(new Set(companies.map((c) => c.businessSector)));
@@ -122,145 +119,152 @@ const CompaniesPage = () => {
 
                     {loading ? (
                         <div className="flex justify-center items-center h-64">
-                        {/* Spinner */}
-                        <svg
-                            className="animate-spin h-10 w-10 text-blue-600"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                        >
-                            <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                            ></circle>
-                            <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                            />
-                        </svg>
+                            {/* Spinner */}
+                            <svg
+                                className="animate-spin h-10 w-10 text-blue-600"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                ></circle>
+                                <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                />
+                            </svg>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                        {/* Bộ lọc */}
-                        <div className="lg:col-span-1">
-                            <div className='flex justify-between items-center mt-2 mb-4'>
-                                <p className="font-medium text-xl">Bộ lọc</p>
-                                <span className="text-blue-600 text-sm cursor-pointer" onClick={resetFilters}>
-                                    Xóa hết
-                                </span>
-                            </div>
-                            <p className="text-lg font-semibold mb-2">Lọc theo lĩnh vực</p>
-                            <ul className="space-y-2">
-                            {uniqueSectors.map((sector, idx) => (
-                                <li key={idx} className="flex items-center">
-                                <input
-                                    type="checkbox"
-                                    id={sector}
-                                    checked={selectedSectors.includes(sector)}
-                                    onChange={(e) => {
-                                    if (e.target.checked) {
-                                        setSelectedSectors((prev) => [...prev, sector]);
-                                    } else {
-                                        setSelectedSectors((prev) => prev.filter((s) => s !== sector));
-                                    }
-                                    }}
-                                    className="mr-2"
-                                />
-                                <label htmlFor={sector} className="text-sm">
-                                    {sector}
-                                </label>
-                                </li>
-                            ))}
-                            </ul>
-                        </div>
-
-                        {/* Danh sách công ty */}
-                        <div className="lg:col-span-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {currentCompanies.map((company) => (
-                                <button
-                                key={company.companyID}
-                                onClick={() => navigate(`/companies/${company.companyID}`)}
-                                className="w-full text-left bg-white rounded-lg overflow-hidden shadow-xl border border-gray-200 hover:shadow-md hover:cursor-pointer transition-shadow"
-                                >
-                                <img
-                                    src={company.imageCompany || 'https://placehold.co/150'}
-                                    alt={company.companyName}
-                                    className="w-full h-48 object-cover"
-                                />
-                                <div className="p-4">
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                    {company.companyName}
-                                    </h3>
-                                    <p className="text-gray-600 text-sm mb-3">{company.address}</p>
-                                    <div className="flex items-center justify-between">
-                                    <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-                                        {company.businessSector}
-                                    </span>
-                                    <span
-                                        className={`text-sm ${
-                                        company.verificationStatus === 'Đã xác minh'
-                                            ? 'text-green-500'
-                                            : company.verificationStatus === 'Chưa xác minh'
-                                            ? 'text-red-500'
-                                            : 'text-orange-500'
-                                        }`}
-                                    >
-                                        {company.verificationStatus}
-                                    </span>
-                                    </div>
-                                </div>
-                                </button>
-                            ))}
-                            </div>
-
-                            {/* Pagination */}
-                            {totalPages > 1 && (
-                            <div className="mt-6 flex justify-center space-x-2">
-                                <button
-                                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                                disabled={currentPage === 1}
-                                className={`px-3 py-1 rounded border ${
-                                    currentPage === 1 ? 'text-gray-400 border-gray-300' : 'hover:bg-gray-200'
-                                }`}
-                                >
-                                Prev
-                                </button>
-
-                                {[...Array(totalPages)].map((_, idx) => {
-                                const pageNum = idx + 1;
-                                return (
-                                    <button
-                                    key={pageNum}
-                                    onClick={() => setCurrentPage(pageNum)}
-                                    className={`px-3 py-1 rounded border ${
-                                        currentPage === pageNum
-                                        ? 'bg-blue-600 text-white border-blue-600'
-                                        : 'hover:bg-gray-200'
-                                    }`}
-                                    >
-                                    {pageNum}
+                            {/* Bộ lọc */}
+                            <div className="lg:col-span-1">
+                                <div className="flex justify-between items-center mt-2 mb-4">
+                                    <p className="font-medium text-xl">Bộ lọc</p>
+                                    <button className="text-blue-600 text-sm cursor-pointer" onClick={resetFilters}>
+                                        Xóa hết
                                     </button>
-                                );
-                                })}
-
-                                <button
-                                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                                disabled={currentPage === totalPages}
-                                className={`px-3 py-1 rounded border ${
-                                    currentPage === totalPages ? 'text-gray-400 border-gray-300' : 'hover:bg-gray-200'
-                                }`}
-                                >
-                                Next
-                                </button>
+                                </div>
+                                <p className="text-lg font-semibold mb-2">Lọc theo lĩnh vực</p>
+                                <ul className="space-y-2">
+                                    {uniqueSectors.map((sector, idx) => (
+                                        <li key={idx} className="flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                id={sector}
+                                                checked={selectedSectors.includes(sector)}
+                                                onChange={(e) => {
+                                                    if (e.target.checked) {
+                                                        setSelectedSectors((prev) => [...prev, sector]);
+                                                    } else {
+                                                        setSelectedSectors((prev) => prev.filter((s) => s !== sector));
+                                                    }
+                                                }}
+                                                className="mr-2"
+                                            />
+                                            <label htmlFor={sector} className="text-sm">
+                                                {sector}
+                                            </label>
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
-                            )}
-                        </div>
+
+                            {/* Danh sách công ty */}
+                            <div className="lg:col-span-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                                    {currentCompanies.map((company) => (
+                                        <button
+                                            key={company.companyID}
+                                            onClick={() => navigate(`/companies/${company.companyID}`)}
+                                            className="w-full text-left bg-white rounded-lg overflow-hidden shadow-xl border border-gray-200 hover:shadow-md hover:cursor-pointer transition-shadow"
+                                        >
+                                            <img
+                                                src={`/companies/${company.imageCompany}`}
+                                                alt={company.companyName}
+                                                className="w-full h-48 object-cover"
+                                                onError={(e) => {
+                                                    e.currentTarget.src = 'https://placehold.co/150';
+                                                }}
+                                            />
+                                            <div className="p-4">
+                                                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                                    {company.companyName}
+                                                </h3>
+                                                <p className="text-gray-600 text-sm mb-3">{company.address}</p>
+                                                <div className="flex items-center justify-between">
+                                                    <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                                                        {company.businessSector}
+                                                    </span>
+                                                    <span
+                                                        className={`text-sm ${
+                                                            company.verificationStatus === 'Đã xác minh'
+                                                                ? 'text-green-500'
+                                                                : company.verificationStatus === 'Chưa xác minh'
+                                                                  ? 'text-red-500'
+                                                                  : 'text-orange-500'
+                                                        }`}
+                                                    >
+                                                        {company.verificationStatus}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {/* Pagination */}
+                                {totalPages > 1 && (
+                                    <div className="mt-6 flex justify-center space-x-2">
+                                        <button
+                                            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                                            disabled={currentPage === 1}
+                                            className={`px-3 py-1 rounded border ${
+                                                currentPage === 1
+                                                    ? 'text-gray-400 border-gray-300'
+                                                    : 'hover:bg-gray-200'
+                                            }`}
+                                        >
+                                            Prev
+                                        </button>
+
+                                        {[...Array(totalPages)].map((_, idx) => {
+                                            const pageNum = idx + 1;
+                                            return (
+                                                <button
+                                                    key={pageNum}
+                                                    onClick={() => setCurrentPage(pageNum)}
+                                                    className={`px-3 py-1 rounded border ${
+                                                        currentPage === pageNum
+                                                            ? 'bg-blue-600 text-white border-blue-600'
+                                                            : 'hover:bg-gray-200'
+                                                    }`}
+                                                >
+                                                    {pageNum}
+                                                </button>
+                                            );
+                                        })}
+
+                                        <button
+                                            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                                            disabled={currentPage === totalPages}
+                                            className={`px-3 py-1 rounded border ${
+                                                currentPage === totalPages
+                                                    ? 'text-gray-400 border-gray-300'
+                                                    : 'hover:bg-gray-200'
+                                            }`}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>
