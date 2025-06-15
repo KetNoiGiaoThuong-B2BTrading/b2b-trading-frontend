@@ -50,10 +50,13 @@ export const API_ENDPOINTS = {
     verifyCompany: (companyId: number) => `${API_BASE_URL}/Admin/Companies/${companyId}/verify`,
 
     // Category Management
-    getAllCategories: '/Admin/Categories',
-    createCategory: '/Admin/Categories',
-    updateCategory: '/Admin/Categories',
-    deleteCategory: '/Admin/Categories',
+    getAllCategories: `${API_BASE_URL}/Admin/Categories`,
+    createCategory: `${API_BASE_URL}/Admin/Categories`,
+    updateCategory: `${API_BASE_URL}/Admin/Categories`,
+    deleteCategory: `${API_BASE_URL}/Admin/Categories`,
+
+    // Category Management for business
+    getAllCategoriesForBusiness: `${API_BASE_URL}/Category/all`,
 
     // Contract Management
     getAllContracts: `${API_BASE_URL}/Admin/Contracts`,
@@ -61,6 +64,7 @@ export const API_ENDPOINTS = {
 
     // Product Management
     getAllProducts: `${API_BASE_URL}/Admin/Products`,
+    getAllProductsForBusiness: `${API_BASE_URL}/product/all`,
     approveProduct: (productId: number) => `${API_BASE_URL}/Admin/Products/${productId}/approve`,
 
     // Quote Management

@@ -73,7 +73,7 @@ const CategoriesPage = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await api.get(API_ENDPOINTS.getAllCategories);
+                const res = await api.get(API_ENDPOINTS.getAllCategoriesForBusiness);
                 console.log('Fetched categories:', res.data);
                 if (res.data && Array.isArray(res.data)) {
                     setCategories(res.data);
@@ -130,7 +130,7 @@ const CategoriesPage = () => {
                                 >
                                     <div className="aspect-w-16 aspect-h-10 overflow-hidden">
                                         <img
-                                            src={category.categoryImage}
+                                            src={`/categories/${category.categoryImage}`}
                                             alt={category.categoryName}
                                             className="w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
                                         />

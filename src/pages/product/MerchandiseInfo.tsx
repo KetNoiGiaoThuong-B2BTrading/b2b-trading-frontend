@@ -3,6 +3,7 @@ import api from '../../lib/axios';
 import { API_ENDPOINTS } from '../../lib/apiConfig';
 import { useToast } from '../../context/ToastContext';
 import Cookies from 'js-cookie';
+import GenericModal from '../../components/Modal/GenericModal';
 
 interface Product {
     productID: number;
@@ -221,7 +222,7 @@ export default function MerchandiseInfo() {
                                 <tr key={product.productID} className="border-b">
                                     <td className="px-4 py-2">
                                         <img
-                                            src={product.image}
+                                            src={`/products/${product.image}`}
                                             alt={product.productName}
                                             className="w-16 h-16 object-cover"
                                         />
@@ -265,7 +266,11 @@ export default function MerchandiseInfo() {
 
             {/* Add/Edit Product Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <GenericModal
+                    isOpen={isModalOpen}
+                    title={editingProduct ? 'Edit Product' : 'Add New Product'}
+                    onClose={() => setIsModalOpen(false)}
+                >
                     <div className="bg-white p-6 rounded-lg w-full max-w-2xl">
                         <h2 className="text-xl font-bold mb-4">
                             {editingProduct ? 'Edit Product' : 'Add New Product'}
@@ -384,7 +389,7 @@ export default function MerchandiseInfo() {
                             </button>
                         </div>
                     </div>
-                </div>
+                </GenericModal>
             )}
         </div>
     );

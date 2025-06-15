@@ -63,37 +63,37 @@ const ProductPage = () => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-              const response = await api.get(API_ENDPOINTS.getAllProducts);
-          
-              let fetchedProducts: Product[] = [];
-          
-              if (Array.isArray(response.data)) {
-                fetchedProducts = response.data;
-              } else if (Array.isArray(response.data.data)) {
-                fetchedProducts = response.data.data;
-              }
-          
-              setAllProducts(fetchedProducts);
-          
-              // Lọc ngay tại đây
-              const categoryID = Number(searchParams.get('categoryID'));
-              if (!isNaN(categoryID) && categoryID > 0) {
-                const filtered = fetchedProducts.filter(p => p.categoryID === categoryID);
-                setFilteredProducts(filtered);
-                setResultsCount(filtered.length);
-              } else {
-                setFilteredProducts(fetchedProducts);
-                setResultsCount(fetchedProducts.length);
-              }
+                const response = await api.get(API_ENDPOINTS.getAllProductsForBusiness);
+
+                let fetchedProducts: Product[] = [];
+
+                if (Array.isArray(response.data)) {
+                    fetchedProducts = response.data;
+                } else if (Array.isArray(response.data.data)) {
+                    fetchedProducts = response.data.data;
+                }
+
+                setAllProducts(fetchedProducts);
+
+                // Lọc ngay tại đây
+                const categoryID = Number(searchParams.get('categoryID'));
+                if (!isNaN(categoryID) && categoryID > 0) {
+                    const filtered = fetchedProducts.filter((p) => p.categoryID === categoryID);
+                    setFilteredProducts(filtered);
+                    setResultsCount(filtered.length);
+                } else {
+                    setFilteredProducts(fetchedProducts);
+                    setResultsCount(fetchedProducts.length);
+                }
             } catch (error) {
                 console.error('Lỗi khi gọi API:', error);
                 // setAllProducts(fallbackProducts);
                 // setFilteredProducts(fallbackProducts);
                 // setResultsCount(fallbackProducts.length);
             } finally {
-              setLoading(false);
+                setLoading(false);
             }
-          };          
+        };
 
         fetchProducts();
     }, []);
@@ -103,36 +103,36 @@ const ProductPage = () => {
         const sorted = sortProducts(filtered, sort);
         setFilteredProducts(sorted);
         setResultsCount(sorted.length);
-      
+
         if (hasFilteredOnce && currentPage !== 1) {
-          changePage(1);
+            changePage(1);
         }
-      
+
         if (!hasFilteredOnce) {
-          setHasFilteredOnce(true);
+            setHasFilteredOnce(true);
         }
-    };      
+    };
 
     const sortProducts = (products: Product[], sortType: string) => {
         const sorted = [...products];
         switch (sortType) {
-          case 'priceLow':
-            return sorted.sort((a, b) => a.unitPrice - b.unitPrice);
-          case 'priceHigh':
-            return sorted.sort((a, b) => b.unitPrice - a.unitPrice);
-          case 'newest':
-            return sorted.sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime());
-          case 'popular':
-          default:
-            return sorted;
+            case 'priceLow':
+                return sorted.sort((a, b) => a.unitPrice - b.unitPrice);
+            case 'priceHigh':
+                return sorted.sort((a, b) => b.unitPrice - a.unitPrice);
+            case 'newest':
+                return sorted.sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime());
+            case 'popular':
+            default:
+                return sorted;
         }
-    };      
+    };
 
     useEffect(() => {
         const sorted = sortProducts(filteredProducts, sort);
         setFilteredProducts(sorted);
-      }, [sort]);
-      
+    }, [sort]);
+
     // Phân trang trên filteredProducts
     const paginatedProducts = filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -147,7 +147,11 @@ const ProductPage = () => {
                 <div className="flex flex-col md:flex-row gap-6">
                     <div className="w-full md:w-1/4">
                         {/* Truyền allProducts cho FilterSection để filter luôn trên dữ liệu gốc */}
-                        <FilterSection onFilterChange={handleFilterChange} products={allProducts} initialCategoryID={categoryID} />
+                        <FilterSection
+                            onFilterChange={handleFilterChange}
+                            products={allProducts}
+                            initialCategoryID={categoryID}
+                        />
                     </div>
 
                     <div className="w-full md:w-3/4">
@@ -163,21 +167,35 @@ const ProductPage = () => {
                                 <button
                                     onClick={() => setView('grid')}
                                     className={`p-2 rounded-l-md border ${
-                                        view === 'grid' ? 'bg-blue-100 text-blue-600 border-blue-600' : 'bg-gray-100 border-gray-300'
+                                        view === 'grid'
+                                            ? 'bg-blue-100 text-blue-600 border-blue-600'
+                                            : 'bg-gray-100 border-gray-300'
                                     }`}
                                 >
                                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M4 6h16M4 12h16M4 18h16"
+                                        />
                                     </svg>
                                 </button>
                                 <button
                                     onClick={() => setView('list')}
                                     className={`p-2 rounded-r-md border ${
-                                        view === 'list' ? 'bg-blue-100 text-blue-600 border-blue-600' : 'bg-gray-100 border-gray-300'
+                                        view === 'list'
+                                            ? 'bg-blue-100 text-blue-600 border-blue-600'
+                                            : 'bg-gray-100 border-gray-300'
                                     }`}
                                 >
                                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                                        />
                                     </svg>
                                 </button>
                                 <span className="ml-4 text-sm font-medium">Tìm thấy {resultsCount} kết quả</span>
@@ -240,7 +258,9 @@ const ProductPage = () => {
                             </div>
                         ) : (
                             <>
-                                <div className={`grid ${view === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'} gap-6 mb-8`}>
+                                <div
+                                    className={`grid ${view === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'} gap-6 mb-8`}
+                                >
                                     {paginatedProducts.map((product) => (
                                         <ProductCard key={product.productID} product={product} />
                                     ))}
@@ -264,17 +284,22 @@ const ProductPage = () => {
                                         </svg>
                                     </button>
 
-                                    {Array.from({ length: Math.ceil(filteredProducts.length / itemsPerPage) }, (_, i) => (
-                                        <button
-                                            key={i + 1}
-                                            onClick={() => changePage(i + 1)}
-                                            className={`px-3 py-1 border rounded ${
-                                                currentPage === i + 1 ? 'bg-blue-600 text-white' : 'hover:bg-gray-200'
-                                            }`}
-                                        >
-                                            {i + 1}
-                                        </button>
-                                    ))}
+                                    {Array.from(
+                                        { length: Math.ceil(filteredProducts.length / itemsPerPage) },
+                                        (_, i) => (
+                                            <button
+                                                key={i + 1}
+                                                onClick={() => changePage(i + 1)}
+                                                className={`px-3 py-1 border rounded ${
+                                                    currentPage === i + 1
+                                                        ? 'bg-blue-600 text-white'
+                                                        : 'hover:bg-gray-200'
+                                                }`}
+                                            >
+                                                {i + 1}
+                                            </button>
+                                        ),
+                                    )}
 
                                     <button
                                         disabled={currentPage === Math.ceil(filteredProducts.length / itemsPerPage)}
@@ -299,7 +324,7 @@ const ProductPage = () => {
             </div>
 
             {/* Recommended Products */}
-            {/* <div className="bg-white py-10">
+            <div className="bg-white py-10">
                 <div className="container mx-auto px-4">
                     <h2 className="text-2xl font-semibold mb-6">Có thể bạn sẽ thích</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -308,7 +333,7 @@ const ProductPage = () => {
                         ))}
                     </div>
                 </div>
-            </div> */}
+            </div>
         </div>
     );
 };

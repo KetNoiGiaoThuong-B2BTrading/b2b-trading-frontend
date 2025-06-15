@@ -82,7 +82,7 @@ const RecommendedProducts: React.FC = () => {
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const response = await api.get(API_ENDPOINTS.getAllProducts);
+            const response = await api.get(API_ENDPOINTS.getAllProductsForBusiness);
             setProducts(response.data);
         } catch (error) {
             console.error('Error fetching products:', error);
@@ -114,9 +114,8 @@ const RecommendedProducts: React.FC = () => {
 
             <div className="w-full">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {Array.isArray(products) && products.map((product, index) => (
-                    <ProductCard key={index} product={product} />
-                ))}
+                    {Array.isArray(products) &&
+                        products.map((product, index) => <ProductCard key={index} product={product} />)}
                 </div>
             </div>
         </section>

@@ -48,35 +48,36 @@ const CategoriesSection = () => {
     const navigate = useNavigate();
     const [categories, setCategories] = useState<Category[]>(fallbackCategories);
     const [loading, setLoading] = useState(false);
+    const fetchCategories = async () => {
+        try {
+            setLoading(true);
+            const res = await api.get(API_ENDPOINTS.getAllCategoriesForBusiness);
+            console.log('API response data:', res.data);
+            if (Array.isArray(res.data)) {
+                const transformed = res.data.map((item: any) => ({
+                    categoryID: item.categoryID,
+                    categoryName: item.categoryName,
+                    parentCategoryID: item.parentCategoryID,
+                    parentCategoryName: item.parentCategoryName,
+                    categoryImage: `/categories/${item.categoryImage}`,
+                }));
+                setCategories(transformed);
+            } else {
+                console.warn('API trả về dữ liệu không phải mảng. Dùng fallback.');
+                setCategories(fallbackCategories);
+            }
+        } catch (error) {
+            console.error('Lỗi gọi API:', error);
+            setCategories(fallbackCategories);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                setLoading(true);
-                const res = await api.get(API_ENDPOINTS.getAllCategories);
-                console.log('API response data:', res.data);
-                if (Array.isArray(res.data)) {
-                    const transformed = res.data.map((item: any) => ({
-                        categoryID: item.categoryID,
-                        categoryName: item.categoryName,
-                        parentCategoryID: item.parentCategoryID,
-                        parentCategoryName: null,
-                        categoryImage: `/categories/${item.imageCategoly}`,
-                    }));
-                    setCategories(transformed);
-                } else {
-                    console.warn('API trả về dữ liệu không phải mảng. Dùng fallback.');
-                    setCategories(fallbackCategories);
-                }
-            } catch (error) {
-                console.error('Lỗi gọi API:', error);
-                setCategories(fallbackCategories);
-            } finally {
-                setLoading(false);
-            }
-        };
+        console.log(categories);
         fetchCategories();
-    }, []);        
+    }, []);
 
     return (
         <section className="py-6 px-20 bg-white">

@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -67,3 +67,24 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+/* Custom Scrollbar */
+.scrollbar-custom {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #171717 #f1f1f1; /* Firefox: thumb + track */
+}
+
+/* Chrome, Safari, Edge */
+.scrollbar-custom::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Màu nền track */
+    border-radius: 10px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+    background-color: #171717;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+}
